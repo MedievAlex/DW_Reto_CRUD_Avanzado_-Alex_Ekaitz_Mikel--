@@ -3,28 +3,49 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-ini_set('log_errors', 1);
-ini_set('error_log', 'php_error.log');
-
-header("Content-Type: application/json");
+header('Content-Type: application/json; charset=utf-8');
 
 require_once '../controller/controller.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+$data = json_decode(file_get_contents('php://input'), true);
 $username = $data['username'] ?? '';
 $password = $data['password'] ?? '';
 
-$controller = new controller();
-$user = $controller->loginUser($username, $password);
+try {
+    $controller = new controller();
+    $user = $controller->loginUser($username, $password);
 
-if (is_null($user)) {
-    $admin = $controller->loginAdmin($username, $password);
-    if (is_null($admin)) {
-        echo json_encode(["error" => 'El nombre de usuario o contraseña son incorrectos.'], JSON_UNESCAPED_UNICODE);
+    if (is_null($user)) {
+        $admin = $controller->loginAdmin($username, $password);
+
+        if (is_null($admin)) {
+            http_response_code(403);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Username or password are incorrect',
+                'data' => []
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Admin logged correctly',
+                'data' => $admin
+            ], JSON_UNESCAPED_UNICODE);
+        }
     } else {
-        echo json_encode(["resultado" => $admin], JSON_UNESCAPED_UNICODE);
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'User logged correctly',
+            'data' => $user
+        ], JSON_UNESCAPED_UNICODE);
     }
-} else {
-    echo json_encode(["resultado" => $user], JSON_UNESCAPED_UNICODE);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Server error: ' . $e->getMessage(),
+        'data' => []
+    ], JSON_UNESCAPED_UNICODE);
 }
-?>

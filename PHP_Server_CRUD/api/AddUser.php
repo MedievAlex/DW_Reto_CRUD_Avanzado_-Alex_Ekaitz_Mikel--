@@ -3,16 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../controller/controller.php';
 header('Content-Type: application/json; charset=utf-8');
 
-$input = json_decode(file_get_contents('php://input'), true);
-$username = $input['username'] ?? '';
-$pswd = $input['pswd'] ?? '';
+require_once '../controller/controller.php';
+
+$data = json_decode(file_get_contents('php://input'), true);
+$username = $data['username'] ?? '';
+$password = $data['password'] ?? '';
 
 try {
     $controller = new controller();
-    $user = $controller->create_user($username, $pswd);
+    $user = $controller->create_user($username, $password);
 
     if ($user) {
         http_response_code(201);
@@ -30,7 +31,6 @@ try {
         ], JSON_UNESCAPED_UNICODE);
     }
 } catch (Exception $e) {
-    error_log($e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
