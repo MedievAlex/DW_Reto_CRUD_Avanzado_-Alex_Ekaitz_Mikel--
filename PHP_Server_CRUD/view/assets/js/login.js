@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("loginForm")
     .addEventListener("submit", async function (e) {
@@ -7,36 +7,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      let response = await login(username, password);
+      const response = await fetch("../../api/Login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-      if (response.status === 403) {
-        if (response) {
-          alert("Incorrect credentials.");
-        } else {
-          if (response["data"]) {
-            let string = JSON.stringify(response["data"]);
-            let user = JSON.parse(string);
-            console.log(user);
-            localStorage.setItem("actualProfile", string);
-            window.location.href = "main.html";
-          }
-        }
-      } else {
+      if (response.ok) {
+        const result = await response.json();
+
+        localStorage.setItem("actualProfile", result.data);
+        window.location.href = "main.html";
+      } else if (response.status === 403) {
+        alert("Incorrect credentials.");
+      } else if (response.status === 500) {
         console.log("Server error.");
       }
     });
-
-  async function login(username, password) {
-    const response = await fetch("../../api/Login.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    let data = await response.json();
-
-    return data;
-  }
 });
