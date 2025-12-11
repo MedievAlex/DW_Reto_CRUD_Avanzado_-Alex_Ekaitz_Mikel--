@@ -7,14 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      let data = await login(username, password);
+      let response = await login(username, password);
 
-      if (data) {
-        if (data["error"]) {
-          alert("El nombre de usuario o la contraseña con incorrectas.");
+      if (response.status === 403) {
+        if (response) {
+          alert("Incorrect credentials.");
         } else {
-          if (data["resultado"]) {
-            let string = JSON.stringify(data["resultado"]);
+          if (response["data"]) {
+            let string = JSON.stringify(response["data"]);
             let user = JSON.parse(string);
             console.log(user);
             localStorage.setItem("actualProfile", string);
@@ -22,12 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       } else {
-        console.log("Error al cargar JSON.");
+        console.log("Server error.");
       }
     });
 
   async function login(username, password) {
-    const response = await fetch(`../../api/Login.php`, {
+    const response = await fetch("../../api/Login.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
