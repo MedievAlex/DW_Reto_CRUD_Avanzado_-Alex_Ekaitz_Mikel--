@@ -1,5 +1,4 @@
 .logoutIcon {
-  width: 4%;
   text-decoration: none;
   cursor: pointer;
 }
@@ -724,6 +723,7 @@ li {
   text-decoration: none;
   font-weight: normal;
   color: #222020;
+  justify-content: center;
 }
 
 .dropdown-content a:hover {
