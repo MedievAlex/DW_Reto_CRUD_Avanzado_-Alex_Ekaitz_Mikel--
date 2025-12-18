@@ -18,6 +18,7 @@ footer {
   background-color: #333;
   color: white;
   text-align: center;
+  font-size: 10px;
   padding: 10px 0;
   position: fixed;
   width: 100%;
@@ -298,7 +299,7 @@ li {
 
 .listTitle {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
   text-align: left;
 }
 
@@ -741,4 +742,9 @@ li {
   display: none;
   position: static;
   min-width: 100px;
+}
+
+footer p{
+  text-align: justify;
+  text-justify: inter-word;
 }
