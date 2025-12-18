@@ -40,6 +40,7 @@ body,
 html {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
+  background-color: var(--background-color);
 }
 
 .container {
@@ -225,6 +226,7 @@ html {
 .mainPic {
   float: left;
   width: 40%;
+  height: max-content;
   padding: 7px 6px;
 }
 
@@ -663,7 +665,7 @@ li {
   }
 }
 
-/***************************************************NEW************************************************/
+/***************************************************NEW STYLES************************************************/
 .adjustData {
   width: 200px;
   height: 50px;
