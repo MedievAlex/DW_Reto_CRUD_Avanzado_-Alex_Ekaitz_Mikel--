@@ -130,8 +130,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("messageOldPassword").innerHTML =
           "That is not your current password";
         hasErrors = true;
-        console.log("CURRENT PASSWORD: ", userPassword);
-        console.log("INPUT: ", password);
+        //console.log("CURRENT PASSWORD: ", userPassword);
+        //console.log("INPUT: ", password);
       }
 
       if (userPassword == newPassword) {
@@ -159,9 +159,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             }),
           });
 
-          const data = await response.json();
+          const result = await response.json();
 
-          if (data.success) {
+          if (response.ok) {
             actualProfile.PSWD = newPassword;
             document.getElementById("messageSuccessPassword").innerHTML =
               "Password correctly changed";
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }, 3000);
           } else {
             document.getElementById("messageSuccessPassword").innerHTML =
-              data.error;
+              result.message;
             document.getElementById("messageSuccessPassword").style.color =
               "red";
           }
@@ -318,11 +318,11 @@ async function modifyUser() {
           card_no
         )}`
       );
-      const data = await response.json();
+      const result = await response.json();
       //DEBUG console.log(data);
 
-      if (data.success) {
-        document.getElementById("message").innerHTML = data.message;
+      if (response.ok) {
+        document.getElementById("message").innerHTML = result.message;
         document.getElementById("message").style.color = "green";
 
         actualProfile.NAME_ = name;
@@ -344,7 +344,7 @@ async function modifyUser() {
           localStorage.setItem("actualProfile", JSON.stringify(actualProfile));
         }
       } else {
-        document.getElementById("message").innerHTML = data.error;
+        document.getElementById("message").innerHTML = result.message;
         document.getElementById("message").style.color = "red";
       }
     } catch (error) {
@@ -356,9 +356,9 @@ async function modifyUser() {
 /* ----------ADMIN POPUP---------- */
 async function get_all_users() {
   const response = await fetch("../../api/GetAllUsers.php");
-  const data = await response.json();
+  const result = await response.json();
 
-  return data["resultado"];
+  return result.data;
 }
 
 async function delete_user_admin(id) {
@@ -368,12 +368,9 @@ async function delete_user_admin(id) {
     `../../api/DeleteUser.php?id=${encodeURIComponent(id)}`
   );
 
-  const data = await response.json();
+  const result = await response.json();
 
-  if (data.error) {
-    //DEBUG console.log("Error deleting user: ", data.error);
-  } else {
-    //DEBUG console.log("User deleted.");
+  if (response.ok) {
     row = document.getElementById(`user${id}`);
     if (row) row.remove();
   }
@@ -556,11 +553,11 @@ async function modifyAdmin() {
         )}&current_account=${encodeURIComponent(current_account)}`
       );
 
-      const data = await response.json();
+      const result = await response.json();
       //DEBUG console.log(data);
 
-      if (data.success) {
-        document.getElementById("messageAdmin").innerHTML = data.message;
+      if (response.ok) {
+        document.getElementById("messageAdmin").innerHTML = result.message;
         document.getElementById("messageAdmin").style.color = "green";
 
         actualProfile.NAME_ = name;
@@ -579,7 +576,7 @@ async function modifyAdmin() {
           localStorage.getItem("actualProfile")
         );*/
       } else {
-        document.getElementById("messageAdmin").innerHTML = data.error;
+        document.getElementById("messageAdmin").innerHTML = result.message;
         document.getElementById("messageAdmin").style.color = "red";
       }
     } catch (error) {
@@ -603,11 +600,9 @@ async function delete_user(id) {
     `../../api/DeleteUser.php?id=${encodeURIComponent(id)}`
   );
 
-  const data = await response.json();
+  const result = await response.json();
 
-  if (data.error) {
-    //DEBUG console.log("Error deleting user: ", data.error);
-  } else {
+  if (response.ok) {
     window.location.href = "login.html";
   }
 }

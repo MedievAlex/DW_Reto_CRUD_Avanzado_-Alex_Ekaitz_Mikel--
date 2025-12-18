@@ -5,15 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
-      const pswd1 = document.getElementById("pswd1").value;
-      const pswd2 = document.getElementById("pswd2").value;
+      const password = document.getElementById("password").value;
       const parrafo = document.getElementById("mensaje");
-
-      if (pswd1 !== pswd2) {
-        parrafo.innerText = "Las contraseñas no coinciden.";
-        parrafo.style.color = "red";
-        return;
-      }
 
       try {
         const response = await fetch("../../api/AddUser.php", {
@@ -21,29 +14,19 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
           },
-          body: JSON.stringify({ username, pswd1 }),
+          body: JSON.stringify({ username, password }),
         });
 
-        const rawText = await response.text();
+        const result = await response.json();
 
-        let data;
-        try {
-          data = JSON.parse(response.ok ? rawText : "{}");
-        } catch (jsonError) {
-          throw new Error("Respuesta no es JSON válida: " + rawText);
-        }
-
-        if (data.resultado) {
-          parrafo.innerText = "Usuario creado con éxito.";
+        if (response.ok) {
+          parrafo.innerText = result.message;
           parrafo.style.color = "green";
           localStorage.setItem("actualProfile", JSON.stringify(data.resultado));
           window.location.href = "main.html";
-          console.log("Datos recibidos:", data.resultado);
-        } else {
-          parrafo.innerText =
-            "El Usuario ya existe, elija otro nombre de usuario";
+        } else if (response.status === 400) {
+          parrafo.innerText = result.message;
           parrafo.style.color = "red";
-          console.error("Respuesta del servidor:", data);
         }
       } catch (error) {
         parrafo.innerText = "Error al crear el usuario.";

@@ -9,14 +9,30 @@ require_once '../controller/controller.php';
 
 $id = $_GET['id'] ?? '';
 
-$controller = new controller();
-$result = $controller->delete_user($id);
+try {
+    $controller = new controller();
+    $result = $controller->delete_user($id);
 
-if ($result) {
+    if ($result) {
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'User deleted successfully',
+            'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => 'User not found',
+            'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
     echo json_encode([
-        'result' => TRUE
+        'success' => false,
+        'message' => 'Server error: ' . $e->getMessage(),
+        'data' => []
     ], JSON_UNESCAPED_UNICODE);
-} else {
-    echo json_encode(['error' => 'User not found']);
 }
-?>
