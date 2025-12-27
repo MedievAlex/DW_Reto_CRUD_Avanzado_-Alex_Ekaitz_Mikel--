@@ -1,13 +1,10 @@
 <?php
-require_once 'User.php';
-require_once 'Admin.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-ini_set('log_errors', 1);
-ini_set('error_log', 'php_error.log');
+require_once 'User.php';
+require_once 'Admin.php';
 
 class UserModel
 {
@@ -84,7 +81,7 @@ class UserModel
         return "There was an error when processing the profile.";
     }
 
-    public function create_user($username, $pswd1)
+    public function create_user($username, $pswd)
     {
         $checkQuery = "SELECT * FROM PROFILE_ WHERE USER_NAME = ?";
         $checkStmt = $this->conn->prepare($checkQuery);
@@ -96,7 +93,7 @@ class UserModel
         $createQuery = "CALL RegistrarUsuario(?, ?)";
         $createStmt = $this->conn->prepare($createQuery);
         $createStmt->bindValue(1, $username);
-        $createStmt->bindValue(2, $pswd1);
+        $createStmt->bindValue(2, $pswd);
         $createStmt->execute();
         $result = $createStmt->fetch(PDO::FETCH_ASSOC);
         return $result;
@@ -131,7 +128,7 @@ class UserModel
 
     public function modifyUser($email, $username, $telephone, $name, $surname, $gender, $card_no, $profile_code)
     {
-        $query = "UPDATE USER_ U JOIN PROFILE_ P ON U.PROFILE_CODE = P.PROFILE_CODE 
+        $query = "UPDATE USER_ U JOIN PROFILE_ P ON U.PROFILE_CODE = P.PROFILE_CODE
         SET P.EMAIL = :email, P.USER_NAME = :username, P.TELEPHONE = :telephone, P.NAME_ = :name_, P.SURNAME = :surname, U.GENDER = :gender, U.CARD_NO = :card_no
         WHERE P.PROFILE_CODE = :profile_code";
 
@@ -154,7 +151,7 @@ class UserModel
 
     public function modifyAdmin($email, $username, $telephone, $name, $surname, $current_account, $profile_code)
     {
-        $query = "UPDATE ADMIN_ A JOIN PROFILE_ P ON A.PROFILE_CODE = P.PROFILE_CODE 
+        $query = "UPDATE ADMIN_ A JOIN PROFILE_ P ON A.PROFILE_CODE = P.PROFILE_CODE
         SET P.EMAIL = :email, P.USER_NAME = :username, P.TELEPHONE = :telephone, P.NAME_ = :name_, P.SURNAME = :surname, A.CURRENT_ACCOUNT = :current_account
         WHERE P.PROFILE_CODE = :profile_code";
 
@@ -188,4 +185,3 @@ class UserModel
         }
     }
 }
-?>
