@@ -2,7 +2,6 @@
 require_once '../Config/Database.php';
 require_once '../model/UserModel.php';
 
-
 class controller
 {
     private $UserModel;
@@ -59,4 +58,3 @@ class controller
         return $this->UserModel->modifyPassword($profile_code, $password);
     }
 }
-?>

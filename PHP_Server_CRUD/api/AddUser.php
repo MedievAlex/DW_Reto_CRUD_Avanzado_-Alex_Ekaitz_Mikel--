@@ -5,17 +5,49 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
 
+require_once '../Config/Session.php';
 require_once '../controller/controller.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
-$username = $data['username'] ?? '';
-$password = $data['password'] ?? '';
+$username = trim($data['username'] ?? '');
+$password = trim($data['password'] ?? '');
 
 try {
+    $errors = [];
+
+    if (empty($username)) $errors[] = "Username is required";
+    if (empty($password)) $errors[] = "Password is required";
+
+    if (!empty($username)) {
+        if (strlen($username) < 3) {
+            $errors[] = "Username must be at least 3 characters long";
+        }
+    }
+
+    if (!empty($password)) {
+        if (strlen($password) < 6) {
+            $errors[] = "Password must be at least 6 characters long";
+        }
+    }
+
+    if (!empty($errors)) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => implode(', ', $errors),
+            'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
     $controller = new controller();
     $user = $controller->create_user($username, $password);
 
     if ($user) {
+        $_SESSION['profile_code'] = $user['PROFILE_CODE'];
+        $_SESSION['username'] = $username;
+        $_SESSION['user_type'] = 'user';
+
         http_response_code(201);
         echo json_encode([
             'success' => true,
@@ -26,7 +58,7 @@ try {
         http_response_code(400);
         echo json_encode([
             'success' => false,
-            'message' => 'Error creating user',
+            'message' => 'Error creating user - Username may already exist',
             'data' => []
         ], JSON_UNESCAPED_UNICODE);
     }
