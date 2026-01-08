@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
 
+require_once '../Config/Session.php';
 require_once '../controller/controller.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -26,6 +27,10 @@ try {
                 'data' => []
             ], JSON_UNESCAPED_UNICODE);
         } else {
+            $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_username'] = $admin['username'];
+            $_SESSION['user_type'] = 'admin';
+
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -34,6 +39,10 @@ try {
             ], JSON_UNESCAPED_UNICODE);
         }
     } else {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_type'] = 'user';
+
         http_response_code(200);
         echo json_encode([
             'success' => true,
