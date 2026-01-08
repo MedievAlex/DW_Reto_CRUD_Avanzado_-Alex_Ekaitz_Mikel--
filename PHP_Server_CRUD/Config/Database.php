@@ -1,12 +1,14 @@
 <?php
-class Database {
+class Database
+{
     private $host = "localhost";
-    private $db_name = "CRUD_ADT";
+    private $db_name = "CRUD_DW";
     private $username = "root";
     private $password = "abcd*1234";
     private $conn;
 
-    public function getConnection() {
+    public function getConnection()
+    {
         $this->conn = null;
         try {
             $this->conn = new PDO(
@@ -21,6 +23,3 @@ class Database {
         return $this->conn;
     }
 }
-?>
-
-
