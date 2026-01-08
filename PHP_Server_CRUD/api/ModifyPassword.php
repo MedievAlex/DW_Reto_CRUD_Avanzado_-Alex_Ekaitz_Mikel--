@@ -12,12 +12,14 @@ requireLogin();
 
 $input = json_decode(file_get_contents('php://input'), true);
 $profile_code = trim($input['profile_code'] ?? '');
+$old_password = trim($input['old_password'] ?? '');
 $new_password = trim($input['new_password'] ?? '');
 
 try {
     $errors = [];
 
     if (empty($profile_code)) $errors[] = "Profile code is required";
+    if (empty($old_password)) $errors[] = "Old password is required";
     if (empty($new_password)) $errors[] = "New password is required";
 
     if (!empty($new_password) && strlen($new_password) < 6) {
