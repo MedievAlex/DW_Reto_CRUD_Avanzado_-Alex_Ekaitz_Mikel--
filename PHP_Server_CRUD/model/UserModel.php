@@ -191,4 +191,67 @@ class UserModel
             return false;
         }
     }
+
+    public function get_videogames()
+    {
+        $query = "SELECT * FROM VIDEOGAME_";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function get_reviews()
+    {
+        $query = "SELECT * FROM REVIEW_";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function get_lists()
+    {
+        $query = "SELECT * FROM LIST_";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function get_videogame($id)
+    {
+        $query = "SELECT * FROM VIDEOGAME_ WHERE VIDEOGAME_CODE = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function get_review($pcode, $vcode)
+    {
+        $query = "SELECT * FROM REVIEW_ WHERE PROFILE_CODE = :pcode AND V_CODE = vcode";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':pcode', $pcode);
+        $stmt->bindParam(':vcode', $vcode);
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 }

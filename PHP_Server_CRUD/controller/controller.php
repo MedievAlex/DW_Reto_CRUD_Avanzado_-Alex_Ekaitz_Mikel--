@@ -57,4 +57,37 @@ class controller
     {
         return $this->UserModel->modifyPassword($profile_code, $password);
     }
+
+    public function get_videogames()
+    {
+        return $this->UserModel->get_videogames();
+    }
+
+    public function get_reviews()
+    {
+        return $this->UserModel->get_reviews();
+    }
+
+    public function get_lists()
+    {
+        return $this->UserModel->get_lists();
+    }
+
+    public function get_videogame($id)
+    {
+        return $this->UserModel->get_videogame($id);
+    }
+
+    public function create_videogame($videogame) {}
+    public function update_videogame($videogame) {}
+    public function delete_videogame($videogame) {}
+
+    public function get_review($pcode, $vcode)
+    {
+        return $this->UserModel->get_review($pcode, $vcode);
+    }
+
+    public function create_review($review) {}
+    public function update_review($review) {}
+    public function delete_review($review) {}
 }
