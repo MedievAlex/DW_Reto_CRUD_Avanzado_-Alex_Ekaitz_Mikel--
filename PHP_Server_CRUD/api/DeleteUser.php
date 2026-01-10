@@ -5,7 +5,10 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
 
+require_once '../Config/Session.php';
 require_once '../controller/controller.php';
+
+requireLogin();
 
 $id = $_GET['id'] ?? '';
 

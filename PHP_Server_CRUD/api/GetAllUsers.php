@@ -15,6 +15,14 @@ try {
     $users = $controller->get_all_users();
 
     if ($users) {
+        /*
+        * El & sirve para referenciar el valor en memoria del elemento en cada iteración del bucle
+        * Es decir, $user en lugar de ser una copia del elemento, es el propio elemento, permitiendo modificar el array original
+        */
+        foreach ($users as &$user) {
+            unset($user['PSWD']);
+        }
+
         http_response_code(200);
         echo json_encode([
             'success' => true,

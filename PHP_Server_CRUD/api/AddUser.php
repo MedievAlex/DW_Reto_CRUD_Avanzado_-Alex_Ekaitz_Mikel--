@@ -48,6 +48,8 @@ try {
         $_SESSION['username'] = $username;
         $_SESSION['user_type'] = 'user';
 
+        unset($user['PSWD']);
+
         http_response_code(201);
         echo json_encode([
             'success' => true,

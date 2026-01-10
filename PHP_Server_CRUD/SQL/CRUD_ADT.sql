@@ -5,7 +5,7 @@ CREATE TABLE PROFILE_(
     PROFILE_CODE INT PRIMARY KEY AUTO_INCREMENT,
     EMAIL VARCHAR (40) UNIQUE,
     USER_NAME VARCHAR (30) UNIQUE,
-    PSWD VARCHAR (30),
+    PSWD VARCHAR (255),
     TELEPHONE BIGINT,
     NAME_ VARCHAR (30),
     SURNAME VARCHAR (30)
@@ -42,7 +42,7 @@ CREATE TABLE LISTED_(
     V_CODE INT,
     PRIMARY KEY (L_NAME, PROFILE_CODE, V_CODE),
     FOREIGN KEY (PROFILE_CODE) REFERENCES PROFILE_(PROFILE_CODE) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (V_CODE) REFERENCES PROFILE_(PROFILE_CODE) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (V_CODE) REFERENCES VIDEOGAME_(V_CODE) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -54,16 +54,16 @@ CREATE TABLE REVIEW_(
     R_DATE DATE,
     PRIMARY KEY (PROFILE_CODE, V_CODE),
     FOREIGN KEY (PROFILE_CODE) REFERENCES PROFILE_(PROFILE_CODE) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (V_CODE) REFERENCES PROFILE_(PROFILE_CODE) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (V_CODE) REFERENCES VIDEOGAME_(V_CODE) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
 INSERT INTO PROFILE_ (PROFILE_CODE, EMAIL, USER_NAME, PSWD, TELEPHONE, NAME_, SURNAME) VALUES
-    (1, 'juan.perez@email.com', 'juanP', '1234', 611223344, 'Juan', 'Pérez'),
-    (2, 'maria.garcia@email.com', 'mariag', '1234', 622334455, 'María', 'García'),
-    (3, 'carlos.lopez@email.com', 'carlosl', '1234', 633445566, 'Carlos', 'López'),
-    (4, 'ana.martinez@email.com', 'anam', '1234', 644556677, 'Ana', 'Martínez'),
-    (5, 'pedro.rodriguez@email.com', 'pedror', '1234', 655667788, 'Pedro', 'Rodríguez');
+    (1, 'juan.perez@email.com', 'juanP', '$2y$10$7OMKfOjQveaUvkRh18Ok8OvWOpSXyAGW0cf/raaZh9Kzk5GucWm6m', 611223344, 'Juan', 'Pérez'),
+    (2, 'maria.garcia@email.com', 'mariag', '$2y$10$dVhwoJ9yT8gRbLuBIWiKD.RLiF87h09uDArHwGAlsuH/0CxTBC0da', 622334455, 'María', 'García'),
+    (3, 'carlos.lopez@email.com', 'carlosl', '$2y$10$cJRVfsmypj/dUfqSlpX0wuoBULPDkSEOGTXBxt627KWp5TuVL5lPG', 633445566, 'Carlos', 'López'),
+    (4, 'ana.martinez@email.com', 'anam', '$2y$10$w04egwZMKEDPgTm8IU4QQeIbfFsdd0dPXBu1HVa81DQgEAcaQgWOm', 644556677, 'Ana', 'Martínez'),
+    (5, 'pedro.rodriguez@email.com', 'pedror', '$2y$10$3qVuwp5IecRyRoHP2So0v.WeQMzBLeTs.O6s.NWb/Nqv.KpQrtX8G', 655667788, 'Pedro', 'Rodríguez');
 
 
 INSERT INTO USER_ (PROFILE_CODE, GENDER, CARD_NO) VALUES
@@ -78,10 +78,10 @@ INSERT INTO ADMIN_ (PROFILE_CODE, CURRENT_ACCOUNT) VALUES
 
 
 DELIMITER //
-CREATE PROCEDURE RegistrarUsuario( IN p_username VARCHAR(30), IN p_pswd VARCHAR(30))
+CREATE PROCEDURE RegistrarUsuario( IN p_username VARCHAR(30), IN p_pswd VARCHAR(255))
 BEGIN
     DECLARE  nuevo_profile_code INT;
-    
+
     INSERT INTO PROFILE_ (EMAIL, USER_NAME, PSWD, TELEPHONE, NAME_, SURNAME)
     VALUES (null, p_username, p_pswd, null, null, null);
 
@@ -89,7 +89,7 @@ BEGIN
 
     INSERT INTO USER_ (PROFILE_CODE, GENDER, CARD_NO)
     VALUES (nuevo_profile_code, null, null);
-    
+
     SELECT * FROM PROFILE_ P, USER_ U WHERE P.PROFILE_CODE = U.PROFILE_CODE AND P.PROFILE_CODE= nuevo_profile_code;
  END //
 

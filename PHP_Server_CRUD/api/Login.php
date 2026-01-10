@@ -27,9 +27,11 @@ try {
                 'data' => []
             ], JSON_UNESCAPED_UNICODE);
         } else {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_username'] = $admin['username'];
+            $_SESSION['admin_id'] = $admin['PROFILE_CODE'];
+            $_SESSION['admin_username'] = $admin['USER_NAME'];
             $_SESSION['user_type'] = 'admin';
+
+            unset($user['PSWD']);
 
             http_response_code(200);
             echo json_encode([
@@ -39,9 +41,11 @@ try {
             ], JSON_UNESCAPED_UNICODE);
         }
     } else {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_id'] = $user['PROFILE_CODE'];
+        $_SESSION['username'] = $user['USER_NAME'];
         $_SESSION['user_type'] = 'user';
+
+        unset($user['PSWD']);
 
         http_response_code(200);
         echo json_encode([
