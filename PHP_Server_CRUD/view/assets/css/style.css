@@ -428,6 +428,13 @@ li {
   box-shadow: none;
   padding: 0;
 }
+.profileAdminForm{
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
 
 .profileHeader {
   display: flex;

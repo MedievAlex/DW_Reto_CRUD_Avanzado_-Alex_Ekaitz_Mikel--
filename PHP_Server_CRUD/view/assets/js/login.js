@@ -16,14 +16,24 @@ document.addEventListener("DOMContentLoaded", async () => {
           body: JSON.stringify({ username, password }),
         });
 
-        const result = await response.json();
 
+
+        const result = await response.json();
         if (response.ok) {
-          localStorage.setItem("actualProfile", result.data);
+          if (typeof result.data === 'object') {
+            localStorage.setItem("actualProfile", JSON.stringify(result.data));
+          } else {
+            localStorage.setItem("actualProfile", result.data);
+          }
           window.location.href = "main.html";
         } else if (response.status === 403) {
           alert(result.message);
+        } else {
+          alert("Error: " + (result.message || "Error desconocido"));
         }
-      } catch {}
+      } catch (error) {
+        console.error("Error completo en login:", error);
+        alert("Error de conexión. Por favor, inténtalo de nuevo.");
+      }
     });
 });

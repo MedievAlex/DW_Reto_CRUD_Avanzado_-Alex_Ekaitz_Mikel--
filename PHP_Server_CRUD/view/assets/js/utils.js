@@ -1,4 +1,4 @@
-export function checkProfileType(profile) {
+function checkProfileType(profile) {
   if (["CARD_NO"] in profile) {
     return "USER";
   } else if (["CURRENT_ACCOUNT"] in profile) {
@@ -7,10 +7,9 @@ export function checkProfileType(profile) {
   return "UNKNOWN";
 }
 
-export function getActualProfile() {
+function getActualProfile() {
   return JSON.parse(localStorage.getItem("actualProfile"));
 }
-
-export function getActualUser() {
+function getActualUser() {
   return JSON.parse(localStorage.getItem("actualUser"));
 }

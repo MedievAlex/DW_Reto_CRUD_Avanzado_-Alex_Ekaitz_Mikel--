@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
           parrafo.innerText = result.message;
           parrafo.style.color = "green";
-          localStorage.setItem("actualProfile", JSON.stringify(data.resultado));
+          localStorage.setItem("actualProfile", JSON.stringify(result.data));
           window.location.href = "main.html";
         } else if (response.status === 400) {
           parrafo.innerText = result.message;
