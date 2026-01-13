@@ -11,29 +11,37 @@ require_once '../controller/controller.php';
 requireAdmin();
 
 try {
-    $controller = new controller();
-    $users = $controller->get_all_users();
+  $controller = new controller();
+  $users = $controller->get_all_users();
 
-    if ($users) {
-        http_response_code(200);
-        echo json_encode([
-            'success' => true,
-            'message' => 'Users retrieved successfully',
-            'data' => $users
-        ], JSON_UNESCAPED_UNICODE);
-    } else {
-        http_response_code(400);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Users not found',
-            'data' => []
-        ], JSON_UNESCAPED_UNICODE);
+  if ($users) {
+    /*
+        * El & sirve para referenciar el valor en memoria del elemento en cada iteración del bucle
+        * Es decir, $user en lugar de ser una copia del elemento, es el propio elemento, permitiendo modificar el array original
+        */
+    foreach ($users as &$user) {
+      unset($user['PSWD']);
     }
-} catch (Exception $e) {
-    http_response_code(500);
+
+    http_response_code(200);
     echo json_encode([
-        'success' => false,
-        'message' => 'Server error: ' . $e->getMessage(),
-        'data' => []
+      'success' => true,
+      'message' => 'Users retrieved successfully',
+      'data' => $users
     ], JSON_UNESCAPED_UNICODE);
+  } else {
+    http_response_code(404);
+    echo json_encode([
+      'success' => false,
+      'message' => 'Users not found',
+      'data' => []
+    ], JSON_UNESCAPED_UNICODE);
+  }
+} catch (Exception $e) {
+  http_response_code(500);
+  echo json_encode([
+    'success' => false,
+    'message' => 'Server error: ' . $e->getMessage(),
+    'data' => []
+  ], JSON_UNESCAPED_UNICODE);
 }

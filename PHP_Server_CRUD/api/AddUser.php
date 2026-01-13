@@ -13,60 +13,62 @@ $username = trim($data['username'] ?? '');
 $password = trim($data['password'] ?? '');
 
 try {
-    $errors = [];
+  $errors = [];
 
-    if (empty($username)) $errors[] = "Username is required";
-    if (empty($password)) $errors[] = "Password is required";
+  if (empty($username)) $errors[] = "Username is required";
+  if (empty($password)) $errors[] = "Password is required";
 
-    if (!empty($username)) {
-        if (strlen($username) < 3) {
-            $errors[] = "Username must be at least 3 characters long";
-        }
+  if (!empty($username)) {
+    if (strlen($username) < 3) {
+      $errors[] = "Username must be at least 3 characters long";
     }
+  }
 
-    if (!empty($password)) {
-        if (strlen($password) < 6) {
-            $errors[] = "Password must be at least 6 characters long";
-        }
+  if (!empty($password)) {
+    if (strlen($password) < 6) {
+      $errors[] = "Password must be at least 6 characters long";
     }
+  }
 
-    if (!empty($errors)) {
-        http_response_code(400);
-        echo json_encode([
-            'success' => false,
-            'message' => implode(', ', $errors),
-            'data' => []
-        ], JSON_UNESCAPED_UNICODE);
-        exit();
-    }
-
-    $controller = new controller();
-    $user = $controller->create_user($username, $password);
-
-    if ($user) {
-        $_SESSION['profile_code'] = $user['PROFILE_CODE'];
-        $_SESSION['username'] = $username;
-        $_SESSION['user_type'] = 'user';
-
-        http_response_code(201);
-        echo json_encode([
-            'success' => true,
-            'message' => 'User created successfully',
-            'data' => $user
-        ], JSON_UNESCAPED_UNICODE);
-    } else {
-        http_response_code(400);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Error creating user',
-            'data' => []
-        ], JSON_UNESCAPED_UNICODE);
-    }
-} catch (Exception $e) {
-    http_response_code(500);
+  if (!empty($errors)) {
+    http_response_code(400);
     echo json_encode([
-        'success' => false,
-        'message' => 'Server error: ' . $e->getMessage(),
-        'data' => []
+      'success' => false,
+      'message' => implode(', ', $errors),
+      'data' => []
     ], JSON_UNESCAPED_UNICODE);
+    exit();
+  }
+
+  $controller = new controller();
+  $user = $controller->create_user($username, $password);
+
+  if ($user) {
+    $_SESSION['profile_code'] = $user['PROFILE_CODE'];
+    $_SESSION['username'] = $username;
+    $_SESSION['user_type'] = 'user';
+
+    unset($user['PSWD']);
+
+    http_response_code(201);
+    echo json_encode([
+      'success' => true,
+      'message' => 'User created successfully',
+      'data' => $user
+    ], JSON_UNESCAPED_UNICODE);
+  } else {
+    http_response_code(400);
+    echo json_encode([
+      'success' => false,
+      'message' => 'Error creating user',
+      'data' => []
+    ], JSON_UNESCAPED_UNICODE);
+  }
+} catch (Exception $e) {
+  http_response_code(500);
+  echo json_encode([
+    'success' => false,
+    'message' => 'Server error: ' . $e->getMessage(),
+    'data' => []
+  ], JSON_UNESCAPED_UNICODE);
 }

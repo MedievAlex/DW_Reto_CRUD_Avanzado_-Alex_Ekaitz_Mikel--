@@ -20,58 +20,53 @@ $password = $data['password'] ?? '';
 
 error_log("Username: $username, Password: $password");
 
-try {
-    $controller = new controller();
-    
-    // DEBUG: Verificar qué devuelven los métodos
-    $user = $controller->loginUser($username, $password);
-    error_log("Resultado loginUser: " . print_r($user, true));
-    
-    if (is_null($user)) {
-        $admin = $controller->loginAdmin($username, $password);
-        error_log("Resultado loginAdmin: " . print_r($admin, true));
+try {   
+  $controller = new controller();
+  $user = $controller->loginUser($username, $password);
 
-        if (is_null($admin)) {
-            http_response_code(403);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Username or password are incorrect',
-                'data' => null
-            ], JSON_UNESCAPED_UNICODE);
-        } else {
-            $_SESSION['admin_id'] = $admin['id'] ?? '';
-            $_SESSION['admin_username'] = $admin['username'] ?? '';
-            $_SESSION['user_type'] = 'admin';
+  if (is_null($user)) {
+    $admin = $controller->loginAdmin($username, $password);
 
-
-            
-            http_response_code(200);
-            echo json_encode([
-                'success' => true,
-                'message' => 'Admin logged correctly',
-                'data' => $admin
-            ], JSON_UNESCAPED_UNICODE);
-        }
-    } else {
-        $_SESSION['user_id'] = $user['id'] ?? '';
-        $_SESSION['username'] = $user['username'] ?? '';
-        $_SESSION['user_type'] = 'user';
-
-
-        
-        http_response_code(200);
-        echo json_encode([
-            'success' => true,
-            'message' => 'User logged correctly',
-            'data' => $user
-        ], JSON_UNESCAPED_UNICODE);
-    }
-} catch (Exception $e) {
-    error_log("Error en Login.php: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode([
+    if (is_null($admin)) {
+      http_response_code(403);
+      echo json_encode([
         'success' => false,
-        'message' => 'Server error: ' . $e->getMessage(),
-        'data' => null
+        'message' => 'Username or password are incorrect',
+        'data' => []
+      ], JSON_UNESCAPED_UNICODE);
+    } else {
+      $_SESSION['admin_id'] = $admin['PROFILE_CODE'];
+      $_SESSION['admin_username'] = $admin['USER_NAME'];
+      $_SESSION['user_type'] = 'admin';
+
+      unset($user['PSWD']);
+
+      http_response_code(200);
+      echo json_encode([
+        'success' => true,
+        'message' => 'Admin logged correctly',
+        'data' => $admin
+      ], JSON_UNESCAPED_UNICODE);
+    }
+  } else {
+    $_SESSION['user_id'] = $user['PROFILE_CODE'];
+    $_SESSION['username'] = $user['USER_NAME'];
+    $_SESSION['user_type'] = 'user';
+
+    unset($user['PSWD']);
+
+    http_response_code(200);
+    echo json_encode([
+      'success' => true,
+      'message' => 'User logged correctly',
+      'data' => $user
     ], JSON_UNESCAPED_UNICODE);
+  }
+} catch (Exception $e) {
+  http_response_code(500);
+  echo json_encode([
+    'success' => false,
+    'message' => 'Server error: ' . $e->getMessage(),
+    'data' => []
+  ], JSON_UNESCAPED_UNICODE);
 }
