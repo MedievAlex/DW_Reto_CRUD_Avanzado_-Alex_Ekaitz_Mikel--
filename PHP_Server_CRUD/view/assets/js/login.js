@@ -15,9 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           },
           body: JSON.stringify({ username, password }),
         });
-
-
-
         const result = await response.json();
         if (response.ok) {
           if (typeof result.data === 'object') {

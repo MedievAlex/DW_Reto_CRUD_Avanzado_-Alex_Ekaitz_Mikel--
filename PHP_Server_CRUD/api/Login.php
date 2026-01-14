@@ -8,19 +8,11 @@ header('Content-Type: application/json; charset=utf-8');
 require_once '../Config/Session.php';
 require_once '../controller/controller.php';
 
-// DEBUG: Verificar si recibimos datos
-$rawInput = file_get_contents('php://input');
-error_log("Raw input recibido: " . $rawInput);
-
-$data = json_decode($rawInput, true);
-error_log("Datos decodificados: " . print_r($data, true));
-
+$data = json_decode(file_get_contents('php://input'), true);
 $username = $data['username'] ?? '';
 $password = $data['password'] ?? '';
 
-error_log("Username: $username, Password: $password");
-
-try {   
+try {
   $controller = new controller();
   $user = $controller->loginUser($username, $password);
 
@@ -39,7 +31,7 @@ try {
       $_SESSION['admin_username'] = $admin['USER_NAME'];
       $_SESSION['user_type'] = 'admin';
 
-      unset($user['PSWD']);
+      unset($admin['PSWD']);
 
       http_response_code(200);
       echo json_encode([
