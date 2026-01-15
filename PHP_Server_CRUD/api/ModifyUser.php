@@ -10,7 +10,7 @@ require_once '../controller/controller.php';
 
 requireLogin();
 
-$data = json_decode(file_get_contents('php://input'), true);
+parse_str(file_get_contents('php://input'), $data);
 
 $profile_code = trim($data['profile_code'] ?? '');
 $email = trim($data['email'] ?? '');
@@ -22,9 +22,13 @@ $gender = trim($data['gender'] ?? '');
 $card_no = trim($data['card_no'] ?? '');
 
 try {
+  $userData = getUserData();
+
   $errors = [];
 
-  if (empty($profile_code)) $errors[] = "Profile code is required";
+  if (empty($profile_code) || !is_numeric($profile_code)) {
+    $errors[] = "Profile code is required and must be numeric";
+  }
   if (empty($email)) $errors[] = "Email is required";
   if (empty($username)) $errors[] = "Username is required";
   if (empty($telephone)) $errors[] = "Phone is required";
@@ -40,6 +44,9 @@ try {
   if (!empty($username)) {
     if (strlen($username) < 3) {
       $errors[] = "Username must be at least 3 characters long";
+    }
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $username)) {
+      $errors[] = "Username can only contain letters, numbers, underscores and hyphens";
     }
   }
 
@@ -59,7 +66,7 @@ try {
 
   $validGenders = ['Man', 'Female', 'Other'];
   if (!empty($gender) && !in_array($gender, $validGenders)) {
-    $errors[] = "Invalid gender value";
+    $errors[] = "Invalid gender value. Must be: Man, Female, or Other";
   }
 
   if (!empty($card_no)) {
@@ -79,36 +86,35 @@ try {
     exit();
   }
 
-  if (!isAdmin()) {
-    if (!isset($_SESSION['profile_code']) || $_SESSION['profile_code'] !== $profile_code) {
-      http_response_code(403);
-      echo json_encode([
-        'success' => false,
-        'message' => 'You can only modify your own profile',
-        'data' => []
-      ], JSON_UNESCAPED_UNICODE);
-      exit();
-    }
+  if (!isAdmin() && $userData['id'] != $profile_code) {
+    http_response_code(403);
+    echo json_encode([
+      'success' => false,
+      'message' => 'You can only modify your own profile',
+      'data' => []
+    ], JSON_UNESCAPED_UNICODE);
+    exit();
   }
 
   $controller = new controller();
-
   $modify = $controller->modifyUser($email, $username, $telephone, $name, $surname, $gender, $card_no, $profile_code);
 
   if ($modify) {
-    $_SESSION['username'] = $username;
+    if ($userData['id'] == $profile_code) {
+      $_SESSION['username'] = $username;
+    }
 
     http_response_code(200);
     echo json_encode([
       'success' => true,
-      'message' => 'User modified correctly',
+      'message' => 'User profile updated successfully',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   } else {
     http_response_code(400);
     echo json_encode([
       'success' => false,
-      'message' => 'Error modifying the user',
+      'message' => 'Error updating user profile',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   }

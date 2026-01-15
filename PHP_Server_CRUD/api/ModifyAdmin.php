@@ -8,9 +8,9 @@ header('Content-Type: application/json; charset=utf-8');
 require_once '../Config/Session.php';
 require_once '../controller/controller.php';
 
-requireAdmin();
+requireLogin();
 
-$data = json_decode(file_get_contents('php://input'), true);
+parse_str(file_get_contents('php://input'), $data);
 
 $profile_code = trim($data['profile_code'] ?? '');
 $email = trim($data['email'] ?? '');
@@ -21,9 +21,13 @@ $surname = trim($data['surname'] ?? '');
 $current_account = trim($data['current_account'] ?? '');
 
 try {
+  $userData = getUserData();
+
   $errors = [];
 
-  if (empty($profile_code)) $errors[] = "Profile code is required";
+  if (empty($profile_code) || !is_numeric($profile_code)) {
+    $errors[] = "Profile code is required and must be numeric";
+  }
   if (empty($email)) $errors[] = "Email is required";
   if (empty($username)) $errors[] = "Username is required";
   if (empty($telephone)) $errors[] = "Phone is required";
@@ -75,7 +79,7 @@ try {
     exit();
   }
 
-  if ($_SESSION['profile_code'] !== $profile_code) {
+  if ($userData['id'] != $profile_code) {
     http_response_code(403);
     echo json_encode([
       'success' => false,
@@ -89,19 +93,19 @@ try {
   $modify = $controller->modifyAdmin($email, $username, $telephone, $name, $surname, $current_account, $profile_code);
 
   if ($modify) {
-    $_SESSION['username'] = $username;
+    $_SESSION['admin_username'] = $username;
 
     http_response_code(200);
     echo json_encode([
       'success' => true,
-      'message' => 'Admin modified correctly',
+      'message' => 'Admin profile updated successfully',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   } else {
     http_response_code(400);
     echo json_encode([
       'success' => false,
-      'message' => 'Error modifying the admin',
+      'message' => 'Error updating admin profile',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   }

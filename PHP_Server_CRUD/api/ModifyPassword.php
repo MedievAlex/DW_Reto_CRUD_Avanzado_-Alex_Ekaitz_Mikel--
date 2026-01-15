@@ -10,20 +10,33 @@ require_once '../controller/controller.php';
 
 requireLogin();
 
-$input = json_decode(file_get_contents('php://input'), true);
-$profile_code = trim($input['profile_code'] ?? '');
-$old_password = trim($input['old_password'] ?? '');
-$new_password = trim($input['new_password'] ?? '');
+parse_str(file_get_contents('php://input'), $data);
+
+$profile_code = trim($data['profile_code'] ?? '');
+$old_password = trim($data['old_password'] ?? '');
+$new_password = trim($data['new_password'] ?? '');
 
 try {
+  $userData = getUserData();
+
   $errors = [];
 
-  if (empty($profile_code)) $errors[] = "Profile code is required";
-  if (empty($old_password)) $errors[] = "Old password is required";
+  if (empty($profile_code) || !is_numeric($profile_code)) {
+    $errors[] = "Profile code is required and must be numeric";
+  }
+
   if (empty($new_password)) $errors[] = "New password is required";
 
   if (!empty($new_password) && strlen($new_password) < 6) {
     $errors[] = "New password must be at least 6 characters long";
+  }
+
+  if ($userData['id'] == $profile_code && empty($old_password)) {
+    $errors[] = "Current password is required when changing your own password";
+  }
+
+  if (!empty($old_password) && !empty($new_password) && $old_password === $new_password) {
+    $errors[] = "New password must be different from current password";
   }
 
   if (!empty($errors)) {
@@ -36,7 +49,7 @@ try {
     exit();
   }
 
-  if ($_SESSION['profile_code'] !== $profile_code) {
+  if (!isAdmin() && $userData['id'] != $profile_code) {
     http_response_code(403);
     echo json_encode([
       'success' => false,
@@ -47,22 +60,25 @@ try {
   }
 
   $controller = new controller();
-  $username = $_SESSION['username'];
 
-  if ($_SESSION['user_type'] === 'admin') {
-    $user = $controller->loginAdmin($username, $current_password);
-  } else {
-    $user = $controller->loginUser($username, $current_password);
-  }
+  if ($userData['id'] == $profile_code) {
+    $username = $userData['username'];
 
-  if (is_null($user)) {
-    http_response_code(403);
-    echo json_encode([
-      'success' => false,
-      'message' => 'Current password is incorrect',
-      'data' => []
-    ], JSON_UNESCAPED_UNICODE);
-    exit();
+    if ($userData['type'] === 'admin') {
+      $user = $controller->loginAdmin($username, $old_password);
+    } else {
+      $user = $controller->loginUser($username, $old_password);
+    }
+
+    if (is_null($user)) {
+      http_response_code(403);
+      echo json_encode([
+        'success' => false,
+        'message' => 'Current password is incorrect',
+        'data' => []
+      ], JSON_UNESCAPED_UNICODE);
+      exit();
+    }
   }
 
   $modify = $controller->modifyPassword($profile_code, $new_password);
@@ -71,14 +87,14 @@ try {
     http_response_code(200);
     echo json_encode([
       'success' => true,
-      'message' => 'Password modified correctly',
+      'message' => 'Password updated successfully',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   } else {
     http_response_code(400);
     echo json_encode([
       'success' => false,
-      'message' => 'Error modifying the password',
+      'message' => 'Error updating password',
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
   }

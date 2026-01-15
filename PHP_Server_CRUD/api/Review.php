@@ -27,7 +27,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid profile ID',
+          'message' => 'Profile ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -37,7 +37,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -72,11 +72,11 @@ try {
       $date = $_POST['date'] ?? '';
 
       if (empty($videogame_code) || !is_numeric($videogame_code)) {
-        $errors[] = "Invalid videogame code";
+        $errors[] = "Videogame ID is required and must be numeric";
       }
 
       if (empty($score) || !is_numeric($score)) {
-        $errors[] = "Invalid score";
+        $errors[] = "Score is required and must be numeric";
       }
 
       if (!empty($date)) {
@@ -124,7 +124,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -136,7 +136,7 @@ try {
         $profile_code = $data['pcode'];
 
         if (empty($profile_code) || !is_numeric($profile_code)) {
-          $errors[] = "Invalid profile code";
+          $errors[] = "Profile ID is required and must be numeric";
         }
       } else {
         $profile_code = $userData['id'];
@@ -146,7 +146,9 @@ try {
       $description = $data['description'] ?? '';
       $date = $data['date'] ?? '';
 
-      if (empty($score) || !is_numeric($score)) $errors[] = "Invalid score";
+      if (empty($score) || !is_numeric($score)) {
+        $errors[] = "Score is required and must be numeric";
+      }
 
       if (!empty($date)) {
         $dateObj = DateTime::createFromFormat('Y-m-d', $date);
@@ -214,7 +216,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -227,7 +229,7 @@ try {
           http_response_code(400);
           echo json_encode([
             'success' => false,
-            'message' => 'Invalid profile code',
+            'message' => 'Profile ID is required and must be numeric',
             'data' => []
           ], JSON_UNESCAPED_UNICODE);
           exit();

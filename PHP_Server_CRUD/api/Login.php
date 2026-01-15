@@ -8,11 +8,30 @@ header('Content-Type: application/json; charset=utf-8');
 require_once '../Config/Session.php';
 require_once '../controller/controller.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-$username = $data['username'] ?? '';
-$password = $data['password'] ?? '';
+$username = trim($_POST['username'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
 try {
+  $errors = [];
+
+  if (empty($username)) {
+    $errors[] = "Username is required";
+  }
+
+  if (empty($password)) {
+    $errors[] = "Password is required";
+  }
+
+  if (!empty($errors)) {
+    http_response_code(400);
+    echo json_encode([
+      'success' => false,
+      'message' => implode(', ', $errors),
+      'data' => []
+    ], JSON_UNESCAPED_UNICODE);
+    exit();
+  }
+
   $controller = new controller();
   $user = $controller->loginUser($username, $password);
 
@@ -20,36 +39,35 @@ try {
     $admin = $controller->loginAdmin($username, $password);
 
     if (is_null($admin)) {
-      http_response_code(403);
+      http_response_code(401);
       echo json_encode([
         'success' => false,
         'message' => 'Username or password are incorrect',
         'data' => []
       ], JSON_UNESCAPED_UNICODE);
+      exit();
     } else {
       $_SESSION['admin_id'] = $admin['PROFILE_CODE'];
       $_SESSION['admin_username'] = $admin['USER_NAME'];
-      $_SESSION['user_type'] = 'admin';
       unset($admin['PSWD']);
 
       http_response_code(200);
       echo json_encode([
         'success' => true,
-        'message' => 'Admin logged correctly',
+        'message' => 'Admin logged in successfully',
         'data' => $admin
       ], JSON_UNESCAPED_UNICODE);
     }
   } else {
     $_SESSION['user_id'] = $user['PROFILE_CODE'];
     $_SESSION['username'] = $user['USER_NAME'];
-    $_SESSION['user_type'] = 'user';
 
     unset($user['PSWD']);
 
     http_response_code(200);
     echo json_encode([
       'success' => true,
-      'message' => 'User logged correctly',
+      'message' => 'User logged in successfully',
       'data' => $user
     ], JSON_UNESCAPED_UNICODE);
   }
