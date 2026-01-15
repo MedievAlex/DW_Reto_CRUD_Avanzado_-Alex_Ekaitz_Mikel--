@@ -30,7 +30,6 @@ try {
       $_SESSION['admin_id'] = $admin['PROFILE_CODE'];
       $_SESSION['admin_username'] = $admin['USER_NAME'];
       $_SESSION['user_type'] = 'admin';
-
       unset($admin['PSWD']);
 
       http_response_code(200);

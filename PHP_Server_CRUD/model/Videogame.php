@@ -2,17 +2,27 @@
 
 class Videogame
 {
+  private $videogame_code;
   private $name;
   private $release;
   private $platform;
   private $pegi;
 
-  public function __construct($name, $release, $platform, $pegi)
+  public function __construct($name, $release, $platform, $pegi, $videogame_code = "")
   {
     $this->name = $name;
     $this->release = $release;
     $this->platform = $platform;
     $this->pegi = $pegi;
+    $this->videogame_code = $videogame_code;
+  }
+  public function getVideogameCode()
+  {
+    return $this->videogame_code;
+  }
+  public function setVideogameCode($videogame_code)
+  {
+    $this->videogame_code = $videogame_code;
   }
   public function getName()
   {

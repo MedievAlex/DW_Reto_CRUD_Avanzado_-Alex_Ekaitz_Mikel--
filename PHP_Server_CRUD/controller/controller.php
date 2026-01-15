@@ -80,7 +80,7 @@ class controller
 
     public function create_videogame($videogame) {}
     public function update_videogame($videogame) {}
-    public function delete_videogame($videogame) {}
+    public function delete_videogame($id) {}
 
     public function get_review($pcode, $vcode)
     {
@@ -89,5 +89,14 @@ class controller
 
     public function create_review($review) {}
     public function update_review($review) {}
-    public function delete_review($review) {}
+    public function delete_review($id) {}
+
+    public function get_list($pcode, $list)
+    {
+        return $this->UserModel->get_list($pcode, $list);
+    }
+
+    public function create_list($list) {}
+    public function update_list($list) {}
+    public function delete_list($list) {}
 }

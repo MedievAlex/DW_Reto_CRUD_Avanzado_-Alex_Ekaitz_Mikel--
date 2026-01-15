@@ -89,4 +89,5 @@ try {
     'message' => 'Server error: ' . $e->getMessage(),
     'data' => []
   ], JSON_UNESCAPED_UNICODE);
+
 }

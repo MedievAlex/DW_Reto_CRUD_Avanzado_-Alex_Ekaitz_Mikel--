@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   /* ----------HOME---------- */
   const homeBtn = document.getElementById("adjustData");
-  const closeWindow = document.getElementById("logoutIcon");
+  
 
   /* ----------USER POPUP---------- */
   const modifyUserPopup = document.getElementById("modifyUserPopupAdmin");
@@ -26,8 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* ----------SHARED ELEMENTS---------- */
   const changePwdModal = document.getElementById("changePasswordModal");
   const deleteBtn = document.getElementById("deleteBtn");
-  const closePasswordSpan =
-    document.getElementsByClassName("closePasswordSpan")[0];
+  const closePasswordSpan = document.getElementsByClassName("closePasswordSpan")[0];
+  const closeWindow = document.getElementById("logoutIcon");
 
   /******************************************************************************************************
    ****************************************BUTTON FUNCTIONALITIES****************************************
@@ -51,28 +51,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("hola mundo")
     logout();
   };
-
-  async function logout() {
-    try {
-      const response = await fetch("../../api/Logout.php", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = "login.html";
-      } else {
-        console.error("Error en logout:", result.message);
-        alert("Error al cerrar sesión: " + result.message);
-      }
-    } catch (error) {
-      console.error("Error completo en logout:", error);
-      alert("Error de conexión al cerrar sesión.");
-    }
-  }
 
   /* ----------USER POPUP---------- */
   changePwdBtn.onclick = function () {
@@ -632,4 +610,26 @@ async function delete_user(id) {
   if (response.ok) {
     window.location.href = "login.html";
   }
+}
+
+async function logout() {
+    try {
+      const response = await fetch("../../api/Logout.php", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        window.location.href = "login.html";
+      } else {
+        console.error("Error en logout:", result.message);
+        alert("Error al cerrar sesión: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error completo en logout:", error);
+      alert("Error de conexión al cerrar sesión.");
+    }
 }

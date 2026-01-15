@@ -23,41 +23,21 @@ try {
       $profile_code = $_GET['pcode'] ?? null;
       $videogame_code = $_GET['vcode'] ?? null;
 
-      if (empty($profile_code)) {
+      if (empty($profile_code) || !is_numeric($profile_code)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Profile code is required',
+          'message' => 'Invalid profile ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
       }
 
-      if (!is_numeric($profile_code)) {
+      if (empty($videogame_code) || !is_numeric($videogame_code)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid profile code',
-          'data' => []
-        ], JSON_UNESCAPED_UNICODE);
-        exit();
-      }
-
-      if (empty($videogame_code)) {
-        http_response_code(400);
-        echo json_encode([
-          'success' => false,
-          'message' => 'Videogame code is required',
-          'data' => []
-        ], JSON_UNESCAPED_UNICODE);
-        exit();
-      }
-
-      if (!is_numeric($videogame_code)) {
-        http_response_code(400);
-        echo json_encode([
-          'success' => false,
-          'message' => 'Invalid videogame code',
+          'message' => 'Invalid videogame ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -124,7 +104,7 @@ try {
         echo json_encode([
           'success' => true,
           'message' => 'Review created successfully',
-          'data' => ['id' => $result]
+          'data' => $result
         ], JSON_UNESCAPED_UNICODE);
       } else {
         http_response_code(400);
@@ -137,14 +117,14 @@ try {
       break;
 
     case 'PUT':
-      $id = $_GET['id'] ?? null;
+      $videogame_code = $_GET['id'] ?? null;
       parse_str(file_get_contents('php://input'), $data);
 
-      if (empty($id)) {
+      if (empty($videogame_code) || !is_numeric($videogame_code)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Videogame ID is required',
+          'message' => 'Invalid videogame ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -152,31 +132,25 @@ try {
 
       $errors = [];
 
-      $name = $data['name'] ?? '';
-      $release = $data['release'] ?? '';
-      $platformStr = $data['platform'] ?? '';
-      $pegiStr = $data['pegi'] ?? '';
+      if (isAdmin() && isset($data['pcode'])) {
+        $profile_code = $data['pcode'];
 
-      if (empty($name)) $errors[] = "Name is required";
-      if (empty($release)) $errors[] = "Release date is required";
-      if (empty($platformStr)) $errors[] = "Platform is required";
-      if (empty($pegiStr)) $errors[] = "PEGI rating is required";
-
-      $platform = Platform::tryFrom($platformStr);
-      if (!$platform) {
-        $validPlatforms = array_map(fn($case) => $case->name, Platform::cases());
-        $errors[] = "Invalid platform. Must be: " . implode(', ', $validPlatforms);
+        if (empty($profile_code) || !is_numeric($profile_code)) {
+          $errors[] = "Invalid profile code";
+        }
+      } else {
+        $profile_code = $userData['id'];
       }
 
-      $pegi = Pegi::tryFrom($pegiStr);
-      if (!$pegi) {
-        $validPegi = array_map(fn($case) => $case->name, Pegi::cases());
-        $errors[] = "Invalid PEGI. Must be: " . implode(', ', $validPegi);
-      }
+      $score = $data['score'] ?? '';
+      $description = $data['description'] ?? '';
+      $date = $data['date'] ?? '';
 
-      if (!empty($release)) {
-        $dateObj = DateTime::createFromFormat('Y-m-d', $release);
-        if (!$dateObj || $dateObj->format('Y-m-d') !== $release) {
+      if (empty($score) || !is_numeric($score)) $errors[] = "Invalid score";
+
+      if (!empty($date)) {
+        $dateObj = DateTime::createFromFormat('Y-m-d', $date);
+        if (!$dateObj || $dateObj->format('Y-m-d') !== $date) {
           $errors[] = "Invalid date format. Use YYYY-MM-DD";
         }
       }
@@ -191,55 +165,113 @@ try {
         exit();
       }
 
-      $videogame = new Videogame($name, $release, $platform, $pegi);
-      $result = $controller->update_videogame($id, $videogame);
+      $existingReview = $controller->get_review($profile_code, $videogame_code);
+
+      if (!$existingReview) {
+        http_response_code(404);
+        echo json_encode([
+          'success' => false,
+          'message' => 'Review not found',
+          'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+      }
+
+      if (!isAdmin() && $existingReview['profile_code'] != $userData['id']) {
+        http_response_code(403);
+        echo json_encode([
+          'success' => false,
+          'message' => 'Forbidden - You can only update your own reviews',
+          'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+      }
+
+      $review = new Review($profile_code, $videogame_code, $score, $description, $date);
+      $result = $controller->update_review($review);
 
       if ($result) {
         http_response_code(200);
         echo json_encode([
           'success' => true,
-          'message' => 'Videogame updated successfully',
+          'message' => 'Review updated successfully',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       } else {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Error updating videogame',
+          'message' => 'Error updating review',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       }
       break;
 
     case 'DELETE':
-      requireAdmin();
+      $videogame_code = $_GET['id'] ?? null;
 
-      $id = $_GET['id'] ?? null;
-
-      if (empty($id)) {
+      if (empty($videogame_code) || !is_numeric($videogame_code)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Videogame ID is required',
+          'message' => 'Invalid videogame ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
       }
 
-      $result = $controller->delete_videogame($id);
+      if (isAdmin() && isset($_GET['pcode'])) {
+        $profile_code = $_GET['pcode'];
+
+        if (empty($profile_code) || !is_numeric($profile_code)) {
+          http_response_code(400);
+          echo json_encode([
+            'success' => false,
+            'message' => 'Invalid profile code',
+            'data' => []
+          ], JSON_UNESCAPED_UNICODE);
+          exit();
+        }
+      } else {
+        $profile_code = $userData['id'];
+      }
+
+      $existingReview = $controller->get_review($profile_code, $videogame_code);
+
+      if (!$existingReview) {
+        http_response_code(404);
+        echo json_encode([
+          'success' => false,
+          'message' => 'Review not found',
+          'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+      }
+
+      if (!isAdmin() && $existingReview['profile_code'] != $userData['id']) {
+        http_response_code(403);
+        echo json_encode([
+          'success' => false,
+          'message' => 'Forbidden - You can only delete your own reviews',
+          'data' => []
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+      }
+
+      $result = $controller->delete_review($profile_code, $videogame_code);
 
       if ($result) {
         http_response_code(200);
         echo json_encode([
           'success' => true,
-          'message' => 'Videogame deleted successfully',
+          'message' => 'Review deleted successfully',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       } else {
         http_response_code(404);
         echo json_encode([
           'success' => false,
-          'message' => 'Videogame not found or could not be deleted',
+          'message' => 'Review could not be deleted',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       }

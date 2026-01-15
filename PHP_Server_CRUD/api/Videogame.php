@@ -23,17 +23,7 @@ try {
     case 'GET':
       $id = $_GET['id'] ?? null;
 
-      if (empty($id)) {
-        http_response_code(400);
-        echo json_encode([
-          'success' => false,
-          'message' => 'Videogame ID is required',
-          'data' => []
-        ], JSON_UNESCAPED_UNICODE);
-        exit();
-      }
-
-      if (!is_numeric($id)) {
+      if (empty($id) || !is_numeric($id)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
@@ -132,11 +122,11 @@ try {
       $id = $_GET['id'] ?? null;
       parse_str(file_get_contents('php://input'), $data);
 
-      if (empty($id)) {
+      if (empty($id) || !is_numeric($id)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Videogame ID is required',
+          'message' => 'Invalid videogame ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -183,8 +173,8 @@ try {
         exit();
       }
 
-      $videogame = new Videogame($name, $release, $platform, $pegi);
-      $result = $controller->update_videogame($id, $videogame);
+      $videogame = new Videogame($name, $release, $platform, $pegi, $id);
+      $result = $controller->update_videogame($videogame);
 
       if ($result) {
         http_response_code(200);
@@ -208,11 +198,11 @@ try {
 
       $id = $_GET['id'] ?? null;
 
-      if (empty($id)) {
+      if (empty($id) || !is_numeric($id)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Videogame ID is required',
+          'message' => 'Invalid videogame ID',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
