@@ -27,7 +27,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -126,7 +126,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -202,7 +202,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid videogame ID',
+          'message' => 'Videogame ID is required and must be numeric',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();

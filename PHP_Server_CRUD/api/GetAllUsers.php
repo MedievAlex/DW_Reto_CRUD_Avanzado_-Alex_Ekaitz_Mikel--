@@ -22,6 +22,7 @@ try {
     foreach ($users as &$user) {
       unset($user['PSWD']);
     }
+    unset($user); // Romper la referencia después del foreach por buena práctica
 
     http_response_code(200);
     echo json_encode([

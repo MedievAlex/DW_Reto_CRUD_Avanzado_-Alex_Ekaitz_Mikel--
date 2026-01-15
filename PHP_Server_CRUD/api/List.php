@@ -1,5 +1,3 @@
-// Hay que cambiar logica de recogida de listas.
-
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -29,7 +27,7 @@ try {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid list',
+          'message' => 'List name is required',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -62,11 +60,11 @@ try {
       $list = $_POST['list'] ?? '';
 
       if (empty($videogame_code) || !is_numeric($videogame_code)) {
-        $errors[] = "Invalid videogame code";
+        $errors[] = "Videogame ID is required and must be numeric";
       }
 
       if (empty($list)) {
-        $errors[] = "Invalid list";
+        $errors[] = "List name is required";
       }
 
       if (!empty($errors)) {
@@ -108,19 +106,21 @@ try {
         $profile_code = $data['pcode'];
 
         if (empty($profile_code) || !is_numeric($profile_code)) {
-          $errors[] = "Invalid profile code";
+          $errors[] = "Profile ID is required and must be numeric";
         }
       } else {
         $profile_code = $userData['id'];
       }
 
-      $videogame_code = $data['vcode'];
-      $list = $data['list'];
+      $old_list = $data['old_list'] ?? '';
+      $new_list = $data['new_list'] ?? '';
 
-      if (empty($videogame_code) || !is_numeric($videogame_code)) $errors[] = "Invalid videogame ID";
+      if (empty($old_list)) {
+        $errors[] = "Old list name is required";
+      }
 
-      if (!empty($list)) {
-        $errors[] = "Invalid list";
+      if (empty($new_list)) {
+        $errors[] = "New list name is required";
       }
 
       if (!empty($errors)) {
@@ -133,7 +133,7 @@ try {
         exit();
       }
 
-      $existingList = $controller->get_list($profile_code, $list);
+      $existingList = $controller->get_list($profile_code, $old_list);
 
       if (!$existingList) {
         http_response_code(404);
@@ -155,7 +155,7 @@ try {
         exit();
       }
 
-      $result = $controller->update_list($profile_code, $list);
+      $result = $controller->update_list($profile_code, $old_list, $new_list);
 
       if ($result) {
         http_response_code(200);
@@ -176,12 +176,13 @@ try {
 
     case 'DELETE':
       $list = $_GET['list'] ?? null;
+      $videogame_code = $_GET['vcode'] ?? null;
 
       if (empty($list)) {
         http_response_code(400);
         echo json_encode([
           'success' => false,
-          'message' => 'Invalid list',
+          'message' => 'List name is required',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
@@ -194,7 +195,7 @@ try {
           http_response_code(400);
           echo json_encode([
             'success' => false,
-            'message' => 'Invalid profile code',
+            'message' => 'Profile ID is required and must be numeric',
             'data' => []
           ], JSON_UNESCAPED_UNICODE);
           exit();
@@ -225,20 +226,36 @@ try {
         exit();
       }
 
-      $result = $controller->delete_list($list);
+      if (!empty($videogame_code)) {
+        if (!is_numeric($videogame_code)) {
+          http_response_code(400);
+          echo json_encode([
+            'success' => false,
+            'message' => 'Videogame ID must be numeric',
+            'data' => []
+          ], JSON_UNESCAPED_UNICODE);
+          exit();
+        }
+
+        $result = $controller->delete_game_list($profile_code, $videogame_code, $list);
+        $message = 'Game removed from list successfully';
+      } else {
+        $result = $controller->delete_list($profile_code, $list);
+        $message = 'List deleted successfully';
+      }
 
       if ($result) {
         http_response_code(200);
         echo json_encode([
           'success' => true,
-          'message' => 'List deleted successfully',
+          'message' => $message,
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       } else {
         http_response_code(404);
         echo json_encode([
           'success' => false,
-          'message' => 'List could not be deleted',
+          'message' => 'Operation could not be completed',
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
       }
