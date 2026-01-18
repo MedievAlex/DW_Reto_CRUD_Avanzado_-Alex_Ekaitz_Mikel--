@@ -68,7 +68,7 @@ try {
       $profile_code = $userData['id'];
       $videogame_code = $_POST['vcode'] ?? '';
       $score = $_POST['score'] ?? '';
-      $description = $_POST['description'] ?? '';
+      $description = htmlspecialchars(trim($_POST['description'] ?? ''), ENT_QUOTES, 'UTF-8');
       $date = $_POST['date'] ?? '';
 
       if (empty($videogame_code) || !is_numeric($videogame_code)) {
@@ -77,6 +77,10 @@ try {
 
       if (empty($score) || !is_numeric($score)) {
         $errors[] = "Score is required and must be numeric";
+      }
+
+      if (strlen($description) > 1000) {
+        $errors[] = "Description is too long (max 1000 characters)";
       }
 
       if (!empty($date)) {
@@ -143,11 +147,15 @@ try {
       }
 
       $score = $data['score'] ?? '';
-      $description = $data['description'] ?? '';
+      $description = htmlspecialchars(trim($data['description'] ?? ''), ENT_QUOTES, 'UTF-8');
       $date = $data['date'] ?? '';
 
       if (empty($score) || !is_numeric($score)) {
         $errors[] = "Score is required and must be numeric";
+      }
+
+      if (strlen($description) > 1000) {
+        $errors[] = "Description is too long (max 1000 characters)";
       }
 
       if (!empty($date)) {
@@ -179,7 +187,7 @@ try {
         exit();
       }
 
-      if (!isAdmin() && $existingReview['profile_code'] != $userData['id']) {
+      if (!isAdmin() && $existingReview['PROFILE_CODE'] != $userData['id']) {
         http_response_code(403);
         echo json_encode([
           'success' => false,
@@ -250,7 +258,7 @@ try {
         exit();
       }
 
-      if (!isAdmin() && $existingReview['profile_code'] != $userData['id']) {
+      if (!isAdmin() && $existingReview['PROFILE_CODE'] != $userData['id']) {
         http_response_code(403);
         echo json_encode([
           'success' => false,

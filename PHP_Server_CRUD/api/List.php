@@ -21,7 +21,7 @@ try {
   switch ($method) {
     case 'GET':
       $profile_code = $userData['id'];
-      $list = $_GET['list'] ?? null;
+      $list = htmlspecialchars(trim($_GET['list'] ?? ''), ENT_QUOTES, 'UTF-8');
 
       if (empty($list)) {
         http_response_code(400);
@@ -57,7 +57,7 @@ try {
 
       $profile_code = $userData['id'];
       $videogame_code = $_POST['vcode'] ?? '';
-      $list = $_POST['list'] ?? '';
+      $list = htmlspecialchars(trim($_POST['list'] ?? ''), ENT_QUOTES, 'UTF-8');
 
       if (empty($videogame_code) || !is_numeric($videogame_code)) {
         $errors[] = "Videogame ID is required and must be numeric";
@@ -65,6 +65,10 @@ try {
 
       if (empty($list)) {
         $errors[] = "List name is required";
+      }
+
+      if (strlen($list) > 100) {
+        $errors[] = "List name is too long (max 100 characters)";
       }
 
       if (!empty($errors)) {
@@ -112,8 +116,8 @@ try {
         $profile_code = $userData['id'];
       }
 
-      $old_list = $data['old_list'] ?? '';
-      $new_list = $data['new_list'] ?? '';
+      $old_list = htmlspecialchars(trim($data['old_list'] ?? ''), ENT_QUOTES, 'UTF-8');
+      $new_list = htmlspecialchars(trim($data['new_list'] ?? ''), ENT_QUOTES, 'UTF-8');
 
       if (empty($old_list)) {
         $errors[] = "Old list name is required";
@@ -121,6 +125,10 @@ try {
 
       if (empty($new_list)) {
         $errors[] = "New list name is required";
+      }
+
+      if (strlen($new_list) > 100) {
+        $errors[] = "New list name is too long (max 100 characters)";
       }
 
       if (!empty($errors)) {
@@ -145,7 +153,7 @@ try {
         exit();
       }
 
-      if (!isAdmin() && $existingList['profile_code'] != $userData['id']) {
+      if (!isAdmin() && $existingList[0]['PROFILE_CODE'] != $userData['id']) {
         http_response_code(403);
         echo json_encode([
           'success' => false,
@@ -175,7 +183,7 @@ try {
       break;
 
     case 'DELETE':
-      $list = $_GET['list'] ?? null;
+      $list = htmlspecialchars(trim($_GET['list'] ?? ''), ENT_QUOTES, 'UTF-8');
       $videogame_code = $_GET['vcode'] ?? null;
 
       if (empty($list)) {
@@ -216,7 +224,7 @@ try {
         exit();
       }
 
-      if (!isAdmin() && $existingList['profile_code'] != $userData['id']) {
+      if (!isAdmin() && $existingList[0]['PROFILE_CODE'] != $userData['id']) {
         http_response_code(403);
         echo json_encode([
           'success' => false,
