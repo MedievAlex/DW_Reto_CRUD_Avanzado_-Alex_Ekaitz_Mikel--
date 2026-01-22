@@ -686,7 +686,6 @@ li {
 
 /***************HEADER & FOOTER***************/
 header {
-  background-color: var(--header-color);
   /*position: fixed; Para mantener el header visible todo el tiempo (Se pega a lo de abajo)*/
 }
 
