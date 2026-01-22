@@ -758,7 +758,7 @@ footer p {
 }
 
 /***************PLATFORM***************/
-.platform{
+.platform {
   display: flex;
   flex-direction: column;
 
@@ -766,7 +766,7 @@ footer p {
   padding: 10px;
 }
 
-.platformTitle{
+.platformTitle {
   font-size: 30px;
   font-weight: bold;
 }
@@ -794,57 +794,88 @@ footer p {
   transition: all 0.3s ease-in-out;
 }
 
-.game:nth-of-type(odd){
+.game:nth-of-type(odd) {
   background-color: rgb(28, 28, 50);
 }
 
-.game:nth-of-type(even){
+.game:nth-of-type(even) {
   background-color: rgb(2, 2, 22);
 }
 
-  .game:hover{
-    transform: scale(1.1);
+.game:hover {
+  transform: scale(1.1);
 
-    border: 2px dotted rgb(248, 204, 45);
-    background-color: rgb(70, 88, 105);
-  }
+  border: 2px dotted rgb(248, 204, 45);
+  background-color: rgb(70, 88, 105);
+}
 
-.gameCover {
+.game .gameCover {
   display: flex;
   justify-content: center;
+
+  position: relative;
 }
 
-.gameCover img {
+.game .gameCover img {
   height: 150px;
   width: 150px;
+
+  position: relative;
 }
 
-.gameData {
+.game .heartIcon {
+  position: absolute;
+}
+
+.game .heartIcon img {
+  
+  height: 10%;
+  width: 10%;
+  
+  filter: grayscale(100%);
+
+  transition: filter 0.1s linear;
+}
+
+.game .heartIcon img:hover {
+  filter: grayscale(80%);
+
+  animation: heartBeat 1s infinite;
+}
+
+.game .gameData {
   padding: 10px;
   text-align: justify;
 }
 
-.gameTitle{
+.gameData .gameTitle {
   color: rgb(248, 204, 45);
 }
 
-.gamePEGI{
+.gameData .gamePEGI {
   font-weight: bold;
   color: rgb(247, 222, 133);
 }
 
-.gameRelease{
+.gameData .gameRelease {
   display: inline-block;
 
   font-style: italic;
   color: rgb(247, 222, 133);
 }
 
-.heartIcon{
-  display: inline-block;
-}
+/***************ANIMATIONS***************/
 
-.heartIcon img{
-  height: 5%;
-  width: 5%;
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
