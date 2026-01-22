@@ -757,21 +757,28 @@ footer p {
   text-justify: inter-word;
 }
 
-/***************GAMES***************/
-.games {
+/***************PLATFORM***************/
+.platform{
+  display: flex;
+  flex-direction: column;
+
   margin: 20px;
   padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-
-  overflow-y: scroll;
-
-  background-color: red;
 }
 
+.platformTitle{
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.platformGames {
+  display: flex;
+  overflow-y: scroll;
+}
+
+/***************GAMES***************/
 .game {
-  margin: 20px;
+  margin: 10px;
   padding: 10px;
 
   max-width: 20%;
@@ -784,7 +791,7 @@ footer p {
   background-color: white;
 
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
 }
 
 .gameCover {
@@ -808,4 +815,16 @@ footer p {
 
 .gameData div:nth-child(1) {
   color: grey;
+}
+
+.gameTitle{
+
+}
+
+.gamePEGI{
+  
+}
+
+.gameRelease{
+  
 }
