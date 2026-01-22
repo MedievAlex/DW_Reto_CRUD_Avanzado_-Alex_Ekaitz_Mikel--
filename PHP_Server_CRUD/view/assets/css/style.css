@@ -782,11 +782,19 @@ footer p {
   padding: 10px;
 
   border-radius: 20px;
-  border: 2px solid #4d4a4a;
+  border: 2px solid rgb(144, 144, 144);
 
   display: flex;
   flex-flow: column;
+
+  transition: width 1s, height 1s;
 }
+  .game:hover{
+    height: 200px;
+    width: 200px;
+
+    border: 2px dotted rgb(248, 204, 45);
+  }
 
 .game:nth-of-type(odd){
   background-color: rgb(28, 28, 50);
@@ -802,8 +810,8 @@ footer p {
 }
 
 .gameCover img {
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
 }
 
 .gameData {
