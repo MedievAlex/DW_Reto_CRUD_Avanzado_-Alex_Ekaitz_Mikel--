@@ -20,7 +20,7 @@ footer {
   text-align: center;
   font-size: 10px;
   padding: 10px 0;
-  //position: fixed;
+  /*position: fixed;*/
   width: 100%;
   bottom: 0;
 
@@ -667,7 +667,7 @@ li {
 
 /***************************************************NEW STYLES************************************************/
 /*header {
-  position: fixed; //Para mantener el header visible todo el tiempo
+  position: fixed; Para mantener el header visible todo el tiempo (Se pega a lo de abajo)
 }*/
 
 .adjustData {
@@ -764,7 +764,7 @@ footer p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  
+
   background-color: red;
 }
 
@@ -776,7 +776,7 @@ footer p {
   min-width: 15%;
   max-height: 10%;
   min-height: 5%;
-  
+
   border-radius: 20px;
   border: 2px solid #4d4a4a;
   background-color: white;
@@ -800,7 +800,7 @@ footer p {
 .gameData {
   padding: 10px;
 
-  
+
   text-align: justify;
 }
 
