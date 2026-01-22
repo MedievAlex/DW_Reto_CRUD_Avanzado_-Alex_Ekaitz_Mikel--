@@ -765,6 +765,8 @@ footer p {
   flex-wrap: wrap;
   justify-content: space-evenly;
 
+  overflow-y: scroll;
+
   background-color: red;
 }
 
