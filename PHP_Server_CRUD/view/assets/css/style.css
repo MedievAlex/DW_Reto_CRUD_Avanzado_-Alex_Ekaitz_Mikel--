@@ -806,6 +806,8 @@ footer p {
 
   border: 2px dotted var(--golden-color);
   background-color: var(--hover-card-color);
+
+  cursor: pointer;
 }
 
 .game .gameCover {
@@ -827,8 +829,8 @@ footer p {
 }
 
 .game .heartIcon img {
-  height: 10%;
-  width: 10%;
+  height: 30px;
+  width: 30px;
 
   filter: grayscale(100%);
 
@@ -836,7 +838,7 @@ footer p {
 }
 
 .game .heartIcon img:hover {
-  filter: grayscale(80%);
+  filter: grayscale(70%);
 
   animation: heartBeat 1s infinite;
 }
