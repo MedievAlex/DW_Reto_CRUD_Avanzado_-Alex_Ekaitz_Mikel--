@@ -667,12 +667,18 @@ li {
 
 /***************************************************NEW STYLES************************************************/
 :root {
+  --text-color1: rgb(36, 166, 0);
+  --text-color2: rgb(9, 14, 186);
+  --text-color3: rgb(240, 18, 18);
+
   /******GENERAL******/
   --background-color: #f1f1f1;
   --header-color: rgb(137, 140, 142);
   --footer-color: rgb(51,51,51);
 
   /******MENU******/
+  --menu-color: rgb(34, 32, 32);
+  --selected-option-color: rgb(0, 95, 163);
 
   /******CARDS******/
   --odd-card-color: rgb(28, 28, 50);
@@ -685,10 +691,6 @@ li {
 }
 
 /***************HEADER & FOOTER***************/
-header {
-  /*position: fixed; Para mantener el header visible todo el tiempo (Se pega a lo de abajo)*/
-}
-
 footer p {
   text-align: justify;
   text-justify: inter-word;
@@ -706,9 +708,9 @@ footer p {
   width: 300px;
   height: 50px;
   text-align: center;
-  border: 4px solid #222020;
+  border: 4px solid var(--menu-color);
   border-radius: 10px;
-  background-color: #222020;
+  background-color: var(--menu-color);
   z-index: 99;
 }
 
@@ -747,7 +749,7 @@ footer p {
 .dropdown-content a:hover {
   font-weight: bold;
   color: white;
-  background-color: #005fa3;
+  background-color: var(--selected-option-color);
   transition-duration: 0.5s;
 }
 
@@ -866,6 +868,35 @@ footer p {
 
   font-style: italic;
   color: var(--yellow-color);
+}
+
+/***************LISTAS***************/
+.myListsMain{
+  display: grid;
+
+  grid-template-columns: 1fr 3fr;
+}
+
+.lists {
+  background-color: var(--text-color1);
+}
+
+ul {
+  list-style-type: circle;
+}
+
+.listNames {
+}
+
+.listGames {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+
+  margin: 10px;
+  padding: 10px;
+  
+  background-color: var(--text-color2);
 }
 
 /***************ANIMATIONS***************/
