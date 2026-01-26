@@ -49,7 +49,6 @@ class DBImplementation
         return $result;
       }
     }
-
     return null;
   }
 
@@ -66,19 +65,6 @@ class DBImplementation
     if ($result && password_verify($password, $result['PSWD'])) {
       return false;
     }
-
-    $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ A ON P.PROFILE_CODE=A.PROFILE_CODE
-            WHERE USER_NAME = :username";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(":username", $username);
-    $stmt->execute();
-
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result && password_verify($password, $result['PSWD'])) {
-      return true;
-    }
-
     return "There was an error when processing the profile.";
   }
 
@@ -235,8 +221,7 @@ class DBImplementation
 
   public function update_videogame($videogame)
   {
-    $query = "UPDATE VIDEOGAME_ SET V_NAME = :name_, V_RELEASE = :release_, V_PLATFORM = :platform_, V_PEGI = :pegi_
-WHERE V_CODE = :id";
+    $query = "UPDATE VIDEOGAME_ SET V_NAME = :name_, V_RELEASE = :release_, V_PLATFORM = :platform_, V_PEGI = :pegi_ WHERE V_CODE = :id";
 
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':id', $videogame->getVideogameCode());
@@ -413,4 +398,58 @@ WHERE V_CODE = :id";
 
     return $stmt->rowCount() > 0;
   }
+  public function get_complete_user_data($profile_code)
+  {
+    $query = "SELECT 
+                P.PROFILE_CODE,
+                P.EMAIL,
+                P.USER_NAME,
+                P.PSWD,
+                P.TELEPHONE,
+                P.NAME_,
+                P.SURNAME,
+                U.GENDER,
+                U.CARD_NO
+              FROM PROFILE_ AS P 
+              INNER JOIN USER_ AS U ON P.PROFILE_CODE = U.PROFILE_CODE 
+              WHERE P.PROFILE_CODE = :profile_code";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':profile_code', $profile_code);
+    $stmt->execute();
+
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($data) {
+      $data['type'] = 'user';
+    }
+
+    return $data;
+  }
+  public function get_complete_admin_data($profile_code)
+  {
+    $query = "SELECT 
+                P.PROFILE_CODE,
+                P.EMAIL,
+                P.USER_NAME,
+                P.PSWD,
+                P.TELEPHONE,
+                P.NAME_,
+                P.SURNAME,
+                A.CURRENT_ACCOUNT
+              FROM PROFILE_ AS P 
+              INNER JOIN ADMIN_ AS A ON P.PROFILE_CODE = A.PROFILE_CODE 
+              WHERE P.PROFILE_CODE = :profile_code";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':profile_code', $profile_code);
+    $stmt->execute();
+
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($data) {
+      $data['type'] = 'admin';
+    }
+
+    return $data;
+  }
+
 }

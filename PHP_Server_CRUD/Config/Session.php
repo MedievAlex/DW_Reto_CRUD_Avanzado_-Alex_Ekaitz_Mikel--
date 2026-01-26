@@ -1,4 +1,5 @@
 <?php
+require_once '../controller/controller.php';
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
@@ -41,17 +42,20 @@ function requireAdmin()
 
 function getUserData()
 {
+   $controller = new controller();
   if (isset($_SESSION['admin_id'])) {
+    $admindata = $controller->get_complete_admin_data($_SESSION['admin_id']);
     return [
       'type' => 'admin',
       'id' => $_SESSION['admin_id'],
-      'username' => $_SESSION['admin_username'] ?? null
+      'data' => $admindata ?? null
     ];
   } elseif (isset($_SESSION['user_id'])) {
+    $userdata = $controller->get_complete_user_data($_SESSION['user_id']);
     return [
       'type' => 'user',
       'id' => $_SESSION['user_id'],
-      'username' => $_SESSION['username'] ?? null
+      'data' => $userdata ?? null
     ];
   }
   return null;

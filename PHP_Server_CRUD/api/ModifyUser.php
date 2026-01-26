@@ -23,6 +23,9 @@ $card_no = trim($data['card_no'] ?? '');
 
 try {
   $userData = getUserData();
+  
+  // Debug: verificar estructura de userData
+  error_log("UserData en ModifyUser.php: " . json_encode($userData));
 
   $errors = [];
 
@@ -86,7 +89,12 @@ try {
     exit();
   }
 
-  if (!isAdmin() && $userData['id'] != $profile_code) {
+  // Verificar permisos - MODIFICADO para nueva estructura
+  $currentUserType = $userData['type'] ?? null;
+  $currentUserId = $userData['id'] ?? null;
+  
+  // Si no es admin y no está modificando su propio perfil
+  if ($currentUserType !== 'admin' && $currentUserId != $profile_code) {
     http_response_code(403);
     echo json_encode([
       'success' => false,
@@ -100,8 +108,32 @@ try {
   $modify = $controller->modifyUser($email, $username, $telephone, $name, $surname, $gender, $card_no, $profile_code);
 
   if ($modify) {
-    if ($userData['id'] == $profile_code) {
-      $_SESSION['username'] = $username;
+    // Actualizar datos en sesión si es el usuario actual
+    if ($currentUserId == $profile_code) {
+      // Para usuario normal
+      if ($currentUserType === 'user') {
+        $_SESSION['username'] = $username;
+        
+        // Si queremos actualizar más datos en sesión
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_name'] = $name;
+        
+        // También actualizar los datos en $userData['Data'] si existe
+        if (isset($userData['Data']) && is_array($userData['Data'])) {
+          $userData['Data']['EMAIL'] = $email;
+          $userData['Data']['USER_NAME'] = $username;
+          $userData['Data']['TELEPHONE'] = $telephone;
+          $userData['Data']['NAME'] = $name;
+          $userData['Data']['SURNAME'] = $surname;
+          $userData['Data']['GENDER'] = $gender;
+          $userData['Data']['CARD_NO'] = $card_no;
+        }
+      }
+      // Para admin
+      elseif ($currentUserType === 'admin') {
+        $_SESSION['admin_username'] = $username;
+        $_SESSION['admin_email'] = $email;
+      }
     }
 
     http_response_code(200);
@@ -125,6 +157,4 @@ try {
     'message' => 'Server error: ' . $e->getMessage(),
     'data' => []
   ], JSON_UNESCAPED_UNICODE);
-
 }
-

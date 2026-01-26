@@ -1,5 +1,4 @@
 .logoutIcon {
-  width: 4%;
   text-decoration: none;
   cursor: pointer;
 }
@@ -19,8 +18,9 @@ footer {
   background-color: #333;
   color: white;
   text-align: center;
+  font-size: 10px;
   padding: 10px 0;
-  position: fixed;
+  /*position: fixed;*/
   width: 100%;
   bottom: 0;
 
@@ -35,24 +35,30 @@ footer {
   padding: 0;
   box-sizing: border-box;
 }
+
 body,
 html {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
+  background-color: var(--background-color);
 }
+
 .container {
   display: flex;
   height: 100vh;
 }
+
 .leftPanel {
   width: 50%;
   overflow: hidden;
 }
+
 .leftPanel img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .rightPanel {
   width: 50%;
   display: flex;
@@ -60,20 +66,24 @@ html {
   align-items: center;
   background-color: var(--background-color);
 }
+
 .loginForm {
   width: 80%;
   max-width: 400px;
   padding: 40px;
 }
+
 .loginForm h2 {
   margin-bottom: 20px;
   text-align: center;
 }
+
 .loginForm label {
   display: block;
   margin-top: 15px;
   font-weight: bold;
 }
+
 .loginForm input {
   width: 100%;
   padding: 10px;
@@ -81,6 +91,7 @@ html {
   border: 1px solid #ccc;
   border-radius: 15px;
 }
+
 .loginForm button {
   margin-top: 20px;
   width: 100%;
@@ -91,9 +102,11 @@ html {
   border-radius: 15px;
   cursor: pointer;
 }
+
 .loginForm button:hover {
   background-color: #005fa3;
 }
+
 .registerLink {
   align-self: center;
   margin-top: 15px;
@@ -101,17 +114,21 @@ html {
   font-size: 14px;
   color: #555;
 }
+
 .registerLink a {
   color: #555;
   text-decoration: underline;
   font-weight: bold;
 }
+
 .registerLink a:hover {
   text-decoration: underline;
 }
+
 #mensaje {
   text-align: center;
 }
+
 /* Pantallas pequeñas (móviles) */
 @media (max-width: 600px) {
   .container {
@@ -119,54 +136,67 @@ html {
     height: auto;
     min-height: 100vh;
   }
+
   .leftPanel {
     width: 100%;
     height: 30vh;
   }
+
   .leftPanel img {
     height: 100%;
     object-fit: cover;
   }
+
   .rightPanel {
     width: 100%;
     height: 70vh;
     padding: 20px 0;
   }
+
   .loginForm {
     width: 90%;
     padding: 25px;
     max-width: 350px;
   }
+
   .loginForm h2 {
     font-size: 1.3rem;
     margin-bottom: 15px;
   }
+
   .loginForm input {
     padding: 12px;
   }
+
   .loginForm button {
     padding: 12px;
   }
 }
+
 /* Pantallas medianas (tablets) */
 @media (min-width: 601px) and (max-width: 1024px) {
   .container {
     flex-direction: row;
   }
+
   .leftPanel {
     width: 40%;
   }
+
   .rightPanel {
     width: 60%;
   }
+
   .loginForm {
     padding: 30px;
     width: 85%;
   }
+
   .loginForm h2 {
     font-size: 1.4rem;
   }
 }
+
 /* Pantallas grandes (escritorios) */
 @media (min-width: 1200px) {
   .loginForm {
@@ -183,6 +213,7 @@ html {
     padding: 12px;
   }
 }
+
 /*Home Page*/
 .topPic {
   width: 10%;
@@ -195,6 +226,7 @@ html {
 .mainPic {
   float: left;
   width: 40%;
+  height: max-content;
   padding: 7px 6px;
 }
 
@@ -269,7 +301,7 @@ li {
 
 .listTitle {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
   text-align: left;
 }
 
@@ -373,7 +405,7 @@ li {
   justify-content: center;
 }
 
-.center-flex-div > * {
+.center-flex-div>* {
   margin-left: 5px;
   margin-right: 5px;
   cursor: pointer;
@@ -637,5 +669,224 @@ li {
 
   .field.half {
     width: 100%;
+  }
+}
+
+/***************************************************NEW STYLES************************************************/
+:root {
+  /******GENERAL******/
+  --background-color: #f1f1f1;
+  --header-color: rgb(137, 140, 142);
+  --footer-color: rgb(51,51,51);
+
+  /******MENU******/
+
+  /******CARDS******/
+  --odd-card-color: rgb(28, 28, 50);
+  --even-card-color: rgb(2, 2, 22);
+  --border-card-color: rgb(144, 144, 144);
+  --hover-card-color: rgb(70, 88, 105);
+
+  --golden-color: rgb(248, 204, 45);
+  --yellow-color: rgb(247, 222, 133);
+}
+
+/***************HEADER & FOOTER***************/
+header {
+  /*position: fixed; Para mantener el header visible todo el tiempo (Se pega a lo de abajo)*/
+}
+
+footer p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/***************MENU BAR***************/
+.menuBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.dropdown {
+  padding: 15px;
+  width: 300px;
+  height: 50px;
+  text-align: center;
+  border: 4px solid #222020;
+  border-radius: 10px;
+  background-color: #222020;
+  z-index: 99;
+}
+
+.dropdown:hover {
+  font-weight: bold;
+  background-color: #4d4a4a;
+  transition-duration: 0.5s;
+}
+
+.dropdown a {
+  text-decoration: none;
+  color: white;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content {
+  display: none;
+  position: static;
+  border: 4px solid #4d4a4a;
+  background-color: white;
+  min-width: 100px;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  font-weight: normal;
+  color: #222020;
+  justify-content: center;
+}
+
+.dropdown-content a:hover {
+  font-weight: bold;
+  color: white;
+  background-color: #005fa3;
+  transition-duration: 0.5s;
+}
+
+.logoutIcon{
+  height: 10%;
+  width: 10%;
+}
+
+/***************PLATFORM***************/
+.platform {
+  display: flex;
+  flex-direction: column;
+
+  margin: 20px;
+  padding: 10px;
+}
+
+.platformTitle {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.platformGames {
+  display: flex;
+
+  margin: 10px;
+  padding: 10px;
+
+  overflow-y: scroll;
+}
+
+/***************GAMES***************/
+.game {
+  margin: 10px;
+  padding: 10px;
+
+  border-radius: 20px;
+  border: 2px solid var(--border-card-color);
+
+  display: flex;
+  flex-flow: column;
+
+  transition: all 0.3s ease-in-out;
+}
+
+.game:nth-of-type(odd) {
+  background-color: var(--odd-card-color);
+}
+
+.game:nth-of-type(even) {
+  background-color: var(--even-card-color);
+}
+
+.game:hover {
+  transform: scale(1.1);
+
+  border: 2px dotted var(--golden-color);
+  background-color: var(--hover-card-color);
+
+  cursor: pointer;
+}
+
+.game .gameCover {
+  display: flex;
+  justify-content: center;
+
+  position: relative;
+}
+
+.game .gameCover img {
+  height: 150px;
+  width: 150px;
+
+  position: relative;
+}
+
+.game .heartIcon {
+  position: absolute;
+}
+
+.game .heartIcon img {
+  height: 30px;
+  width: 30px;
+
+  filter: grayscale(100%);
+
+  transition: filter 0.1s linear;
+}
+
+.game .heartIcon img:hover {
+  filter: grayscale(70%);
+
+  animation: heartBeat 1s infinite;
+}
+
+.game .heartIcon img:active {
+  filter: grayscale(0%);
+}
+
+.game .gameData {
+  padding: 10px;
+  text-align: justify;
+}
+
+.gameData .gameTitle {
+  color: var(--golden-color);
+}
+
+.gameData .gamePEGI {
+  font-weight: bold;
+  color: var(--yellow-color);
+}
+
+.gameData .gameRelease {
+  display: inline-block;
+
+  font-style: italic;
+  color: var(--yellow-color);
+}
+
+/***************ANIMATIONS***************/
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }

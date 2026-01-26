@@ -26,7 +26,7 @@ try {
     http_response_code(400);
     echo json_encode([
       'success' => false,
-      'message' => implode(', ', $errors),
+      'message' => implode(' ', $errors),
       'data' => []
     ], JSON_UNESCAPED_UNICODE);
     exit();

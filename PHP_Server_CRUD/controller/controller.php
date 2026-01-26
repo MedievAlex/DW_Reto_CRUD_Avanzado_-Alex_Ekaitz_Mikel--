@@ -142,4 +142,10 @@ class controller
     {
         return $this->DBImplementation->delete_game_list($pcode, $vcode, $list);
     }
+     public function get_complete_user_data($profile_code){
+        return $this->DBImplementation->get_complete_user_data($profile_code);
+     }
+     public function get_complete_admin_data($profile_code){
+        return $this->DBImplementation->get_complete_admin_data($profile_code);
+     }
 }

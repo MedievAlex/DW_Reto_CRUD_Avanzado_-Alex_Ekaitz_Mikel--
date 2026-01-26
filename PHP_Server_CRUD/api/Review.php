@@ -20,7 +20,7 @@ try {
 
   switch ($method) {
     case 'GET':
-      $profile_code = $_GET['pcode'] ?? null;
+      $profile_code = $userData['id'];
       $videogame_code = $_GET['vcode'] ?? null;
 
       if (empty($profile_code) || !is_numeric($profile_code)) {

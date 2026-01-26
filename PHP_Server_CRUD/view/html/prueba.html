@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas API Videojuegos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-group h3 {
+            margin-top: 0;
+            color: #444;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 60px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .btn-get { background: #28a745; }
+        .btn-get:hover { background: #218838; }
+        
+        .btn-post { background: #007bff; }
+        .btn-post:hover { background: #0056b3; }
+        
+        .btn-put { background: #ffc107; color: #333; }
+        .btn-put:hover { background: #e0a800; }
+        
+        .btn-delete { background: #dc3545; }
+        .btn-delete:hover { background: #c82333; }
+        
+        .result-box {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 0;
+        }
+        
+        .method-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .method-get { background: #d4edda; color: #155724; }
+        .method-post { background: #d1ecf1; color: #0c5460; }
+        .method-put { background: #fff3cd; color: #856404; }
+        .method-delete { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Pruebas API Videojuegos</h1>
+    
+    <!-- VIDEOJUEGOS -->
+    <div class="form-group">
+        <h3>GET - Obtener todos los videojuegos</h3>
+        <button id="btnvideojuegoobtener"class="btn-get">Obtener Videojuegos</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>GET - Buscar videojuego por ID</h3>
+        <label>ID del videojuego:</label>
+        <input type="number" id="videogame_id_get" placeholder="Ej: 1">
+        <button id="buscarjuego"class="btn-get">Buscar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>POST - Crear videojuego</h3>
+        <label>Nombre:</label>
+        <input type="text" id="videogame_name" placeholder="Nombre del juego">
+        <label>Fecha lanzamiento:</label>
+        <input type="date" id="videogame_release">
+        <label>Plataforma:</label>
+        <input type="text" id="videogame_platform" placeholder="Ej: PC, PlayStation">
+        <label>PEGI:</label>
+        <select id="videogame_pegi">
+            <option value="">Seleccionar</option>
+            <option value="3">3</option>
+            <option value="7">7</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+        </select>
+        <button id="creategame"class="btn-post">Crear</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>PUT - Actualizar videojuego</h3>
+        <label>ID a actualizar:</label>
+        <input type="number" id="videogame_id_update" placeholder="ID del juego">
+        <label>Nuevo nombre:</label>
+        <input type="text" id="videogame_name_update">
+        <label>Nueva fecha:</label>
+        <input type="date" id="videogame_release_update">
+        <label>Nueva plataforma:</label>
+        <input type="text" id="videogame_platform_update">
+        <label>Nuevo PEGI:</label>
+        <select id="videogame_pegi_update">
+            <option value="">Seleccionar</option>
+            <option value="3">3</option>
+            <option value="7">7</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+        </select>
+        <button id="updatevideogame" class="btn-put">Actualizar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>DELETE - Eliminar videojuego</h3>
+        <label>ID a eliminar:</label>
+        <input type="number" id="videogame_id_delete" placeholder="ID del juego">
+        <button id="deletegame" class="btn-delete" >Eliminar</button>
+    </div>
+    
+    <!-- REVIEWS -->
+    <div class="form-group">
+        <h3>GET - Obtener todas las reviews</h3>
+        <button id="getreviews" class="btn-get">Obtener Reviews</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>GET - Buscar review por código</h3>
+        <label>Código del videojuego:</label>
+        <input type="text" id="review_videogame_code_get" placeholder="Ej: vg-123">
+        <button id="getreview" class="btn-get">Buscar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>POST - Crear review</h3>
+        <label>Código videojuego:</label>
+        <input type="text" id="review_videogame_code" required>
+        <label>Puntuación (1-10):</label>
+        <input type="number" id="review_score" min="1" max="10" required>
+        <label>Descripción:</label>
+        <textarea id="review_description" required></textarea>
+        <label>Fecha:</label>
+        <input type="date" id="review_date" required>
+        <button id="createreview" class="btn-post">Crear</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>PUT - Actualizar review</h3>
+        <label>Puntuación:</label>
+        <input type="number" id="review_score_update" min="1" max="10" required>
+        <label>Descripción:</label>
+        <textarea id="review_description_update" required></textarea>
+        <label>Fecha:</label>
+        <input type="date" id="review_date_update" required>
+        <button id="updatereview" class="btn-put">Actualizar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>DELETE - Eliminar review</h3>
+        <label>Código del videojuego:</label>
+        <input type="text" id="review_videogame_code_delete">
+        <button id="deletereview" class="btn-delete">Eliminar</button>
+    </div>
+    
+    <!-- LISTAS -->
+    <div class="form-group">
+        <h3>GET - Obtener todas las listas</h3>
+        <button id="getlists" class="btn-get">Obtener Listas</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>GET - Buscar lista por nombre</h3>
+        <label>Nombre de la lista:</label>
+        <input type="text" id="list_name_get" placeholder="Ej: Favoritos">
+        <button id="getlist" class="btn-get">Buscar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>POST - Crear lista</h3>
+        <label>Nombre de la lista:</label>
+        <input type="text" id="list_name" required>
+        <label>ID del videojuego:</label>
+        <input type="number" id="list_videogame_id" required>
+        <button id="createlist" class="btn-post">Crear</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>PUT - Actualizar lista</h3>
+        <label>Nombre actual:</label>
+        <input type="text" id="list_old_name" required>
+        <label>Nuevo nombre:</label>
+        <input type="text" id="list_new_name" required>
+        <button id="updatelist" class="btn-put">Actualizar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>DELETE - Eliminar lista</h3>
+        <label>Nombre de la lista:</label>
+        <input type="text" id="list_name_delete">
+        <button id="deletelist" class="btn-delete">Eliminar</button>
+    </div>
+    
+    <div class="form-group">
+        <h3>DELETE - Eliminar juego de lista</h3>
+        <label>Nombre de la lista:</label>
+        <input type="text" id="list_game_list_name" required>
+        <label>ID del videojuego:</label>
+        <input type="number" id="list_game_videogame_id" required>
+        <button id="deletegamefromlist" class="btn-delete">Eliminar Juego</button>
+    </div>
+    
+    <!-- RESULTADOS -->
+    <div class="result-box">
+        <h3>Resultados:</h3>
+        <pre id="result-content">Los resultados aparecerán aquí...</pre>
+    </div>
+    
+    <script src="../assets/js/mainPrueba.js"></script>
+    <script src="../assets/js/auth.js"></script>
+</body>
+</html>

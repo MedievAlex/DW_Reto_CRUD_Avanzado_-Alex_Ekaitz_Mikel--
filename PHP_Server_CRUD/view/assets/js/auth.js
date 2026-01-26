@@ -6,26 +6,29 @@ async function comprobarSession() {
         });
 
         const currentPage = window.location.pathname.split('/').pop();
-        const publicPages = ['login.html', 'signup.html'];
+        const loginPage = 'login.html';
+        const signupPage = 'signup.html';
 
         if (response.ok) {
             if (document.getElementById('contenido')) {
                 document.getElementById('contenido').style.display = 'block';
             }
-
-            if (publicPages.includes(currentPage)) {
+            if (currentPage === loginPage && currentPage=== signupPage) {
                 window.location.href = 'main.html';
             }
-
         } else {
-            if (!publicPages.includes(currentPage)) {
-                window.location.href = 'login.html';
+            const protectedPages = ['main.html'];
+            if (protectedPages.includes(currentPage)) {
+                window.location.href = loginPage;
             }
         }
 
     } catch (error) {
         console.error('Error comprobando sesión:', error);
-        window.location.href = 'login.html';
+        const currentPage = window.location.pathname.split('/').pop();
+        if (currentPage !== 'login.html' && currentPage !== 'signup.html') {
+            window.location.href = 'login.html';
+        }
     }
 }
 
