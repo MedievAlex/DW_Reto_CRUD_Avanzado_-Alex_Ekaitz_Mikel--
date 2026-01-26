@@ -25,14 +25,14 @@ class controller
         return $this->DBImplementation->loginAdmin($username, $password);
     }
 
-    public function checkUser($username, $password)
+    public function create_user($username, $password)
     {
-        return $this->DBImplementation->checkUser($username, $password);
+        return $this->DBImplementation->create_user($username, $password);
     }
 
-    public function create_user($username, $pswd1)
+    public function get_profile($id, $type)
     {
-        return $this->DBImplementation->create_user($username, $pswd1);
+        return $this->DBImplementation->get_profile($id, $type);
     }
 
     public function get_all_users()
