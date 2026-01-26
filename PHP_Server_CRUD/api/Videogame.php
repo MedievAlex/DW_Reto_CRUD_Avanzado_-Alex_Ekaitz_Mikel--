@@ -57,7 +57,7 @@ try {
 
       $errors = [];
 
-      $name = $_POST['name'] ?? '';
+      $name = htmlspecialchars(trim($_POST['name'] ?? ''), ENT_QUOTES, 'UTF-8');
       $release = $_POST['release'] ?? '';
       $platformStr = $_POST['platform'] ?? '';
       $pegiStr = $_POST['pegi'] ?? '';
@@ -66,6 +66,10 @@ try {
       if (empty($release)) $errors[] = "Release date is required";
       if (empty($platformStr)) $errors[] = "Platform is required";
       if (empty($pegiStr)) $errors[] = "PEGI rating is required";
+
+      if (strlen($name) > 200) {
+        $errors[] = "Name is too long (max 200 characters)";
+      }
 
       $platform = Platform::tryFrom($platformStr);
       if (!$platform) {
@@ -134,7 +138,7 @@ try {
 
       $errors = [];
 
-      $name = $data['name'] ?? '';
+      $name = htmlspecialchars(trim($data['name'] ?? ''), ENT_QUOTES, 'UTF-8');
       $release = $data['release'] ?? '';
       $platformStr = $data['platform'] ?? '';
       $pegiStr = $data['pegi'] ?? '';
@@ -143,6 +147,10 @@ try {
       if (empty($release)) $errors[] = "Release date is required";
       if (empty($platformStr)) $errors[] = "Platform is required";
       if (empty($pegiStr)) $errors[] = "PEGI rating is required";
+
+      if (strlen($name) > 200) {
+        $errors[] = "Name is too long (max 200 characters)";
+      }
 
       $platform = Platform::tryFrom($platformStr);
       if (!$platform) {

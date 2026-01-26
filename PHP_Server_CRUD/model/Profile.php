@@ -51,7 +51,7 @@ abstract class Profile
 
   public function show()
   {
-    return "[$this->profile_code] $this->email - $this->user_name" - $this->pswd - $this->telephone - $this->name_ - $this->surname;
+    return "[$this->profile_code] $this->email - $this->user_name - $this->pswd - $this->telephone - $this->name_ - $this->surname";
   }
 
   public abstract function __toString();

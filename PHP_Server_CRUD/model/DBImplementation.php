@@ -52,22 +52,6 @@ class DBImplementation
     return null;
   }
 
-  public function checkUser($username, $password)
-  {
-    $query = "SELECT * FROM PROFILE_ P JOIN USER_ U ON P.PROFILE_CODE = U.PROFILE_CODE
-            WHERE USER_NAME = :username";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(":username", $username);
-    $stmt->execute();
-
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result && password_verify($password, $result['PSWD'])) {
-      return false;
-    }
-    return "There was an error when processing the profile.";
-  }
-
   public function create_user($username, $pswd)
   {
     $checkQuery = "SELECT * FROM PROFILE_ WHERE USER_NAME = ?";
@@ -87,6 +71,25 @@ class DBImplementation
     $createStmt->bindValue(2, $hashedPassword);
     $createStmt->execute();
     $result = $createStmt->fetch(PDO::FETCH_ASSOC);
+    return $result;
+  }
+
+  public function get_profile($id, $type)
+  {
+    if ($type === "admin") {
+      $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ A ON P.PROFILE_CODE=A.PROFILE_CODE
+            WHERE P.PROFILE_CODE = :id";
+    } else {
+      $query = "SELECT * FROM PROFILE_ P JOIN USER_ U ON P.PROFILE_CODE=U.PROFILE_CODE
+            WHERE P.PROFILE_CODE = :id";
+    }
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
     return $result;
   }
 
