@@ -880,10 +880,6 @@ footer p {
 .lists {
   margin: 10px;
   padding: 10px;
-  background-color: var(--test-color1);
-}
-
-.listNames {
 }
 
 .listGames {
@@ -893,8 +889,6 @@ footer p {
 
   margin: 10px;
   padding: 10px;
-  
-  background-color: var(--test-color2);
 }
 
 .list {
@@ -907,6 +901,10 @@ footer p {
 .editIcon img{
   height: 20px;
   width: 20px;
+}
+
+.editIcon img:hover{
+  animation: heartBeat 1s infinite;
 }
 
 /***************ANIMATIONS***************/
