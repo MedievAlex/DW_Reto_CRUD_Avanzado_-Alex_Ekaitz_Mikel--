@@ -667,9 +667,9 @@ li {
 
 /***************************************************NEW STYLES************************************************/
 :root {
-  --text-color1: rgb(36, 166, 0);
-  --text-color2: rgb(9, 14, 186);
-  --text-color3: rgb(240, 18, 18);
+  --test-color1: rgb(36, 166, 0);
+  --test-color2: rgb(9, 14, 186);
+  --test-color3: rgb(240, 18, 18);
 
   /******GENERAL******/
   --background-color: #f1f1f1;
@@ -878,11 +878,9 @@ footer p {
 }
 
 .lists {
-  background-color: var(--text-color1);
-}
-
-ul {
-  list-style-type: circle;
+  margin: 10px;
+  padding: 10px;
+  background-color: var(--test-color1);
 }
 
 .listNames {
@@ -896,7 +894,19 @@ ul {
   margin: 10px;
   padding: 10px;
   
-  background-color: var(--text-color2);
+  background-color: var(--test-color2);
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  
+  cursor: pointer;
+}
+
+.editIcon img{
+  height: 20px;
+  width: 20px;
 }
 
 /***************ANIMATIONS***************/
