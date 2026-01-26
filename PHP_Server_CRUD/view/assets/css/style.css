@@ -674,7 +674,7 @@ li {
   /******GENERAL******/
   --background-color: #f1f1f1;
   --header-color: rgb(137, 140, 142);
-  --footer-color: rgb(51,51,51);
+  --footer-color: rgb(51, 51, 51);
   --clear-grey-color: rgb(215, 216, 221);
 
   /******MENU******/
@@ -754,7 +754,7 @@ footer p {
   transition-duration: 0.5s;
 }
 
-.logoutIcon{
+.logoutIcon {
   height: 10%;
   width: 10%;
 }
@@ -875,7 +875,7 @@ footer p {
 }
 
 /***************LISTAS***************/
-.myListsMain{
+.myListsMain {
   display: grid;
 
   grid-template-columns: 1fr 3fr;
@@ -892,19 +892,19 @@ footer p {
   background-color: var(--clear-grey-color);
 }
 
-.list {
+.listNames .list {
   display: flex;
   justify-content: space-between;
-  
+
   cursor: pointer;
 }
 
-.editIcon img{
+.editIcon img {
   height: 20px;
   width: 20px;
 }
 
-.editIcon img:hover{
+.editIcon img:hover {
   animation: heartBeat 1s infinite;
 }
 
@@ -915,6 +915,49 @@ footer p {
 
   margin: 10px;
   padding: 10px;
+}
+
+/***************REVIEWS***************/
+.reviews {
+  padding: 10px;
+
+  display: flex;
+  flex-flow: column;
+}
+
+.gameReview {
+  margin: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-flow: row;
+
+  border-radius: 15px;
+  background-color: var(--clear-grey-color);
+}
+
+.gameReview .reviewUser{
+  margin: 10px;
+}
+
+.gameReview .reviewData{
+  margin: 10px;
+
+  display: flex;
+  flex-flow: column;
+}
+
+.reviewData .reviewTopData {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+.reviewData .reviewBottomData {
+  display: flex;
+  flex-wrap: wrap;
+  
+  text-align: justify;
 }
 
 /***************ANIMATIONS***************/
