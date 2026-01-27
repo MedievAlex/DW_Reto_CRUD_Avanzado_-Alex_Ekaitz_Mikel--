@@ -793,12 +793,13 @@ footer p {
   margin: 10px;
   padding: 10px;
 
+  max-width: 190px;
+
   border-radius: 20px;
   border: 2px solid var(--border-card-color);
 
   display: flex;
   flex-flow: column;
-  text-wrap: wrap;
 
   transition: all 0.3s ease-in-out;
 }
