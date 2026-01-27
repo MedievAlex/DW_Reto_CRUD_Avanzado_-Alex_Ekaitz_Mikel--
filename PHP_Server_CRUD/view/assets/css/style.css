@@ -798,6 +798,7 @@ footer p {
 
   display: flex;
   flex-flow: column;
+  text-wrap: wrap;
 
   transition: all 0.3s ease-in-out;
 }
