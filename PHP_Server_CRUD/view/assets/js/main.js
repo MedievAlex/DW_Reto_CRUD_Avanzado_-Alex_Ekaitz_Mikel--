@@ -4,9 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    ******************************************************************************************************/
 
   //Loading the current user from localstorage, can be admin or user this is checked later
-  //console.log("hola mundo");
   const profile = await get_profile();
-  //console.log("hola despues del metodo");
 
   /* ----------HOME---------- */
   const homeBtn = document.getElementById("adjustData");
@@ -44,21 +42,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("GENDER disponible?:", profile.GENDER !== undefined);*/
 
       document.getElementById("message").innerHTML = "";
+      profile = get_profile();
       openModifyUserPopup(profile);
     } else if (profile && profile.type === "admin") {
       /*console.log(" ES ADMINISTRADOR (type: 'admin')");
       console.log("CURRENT_ACCOUNT disponible?:",profile.CURRENT_ACCOUNT !== undefined,);*/
-
+      profile = get_profile();
       refreshAdminTable();
       adminTableModal.style.display = "block";
       deleteBtn.style.display = "none";
     } else {
       // Intentar deducir por propiedades existentes (para compatibilidad)
-      if (profile && profile.data.CARD_NO !== undefined) {
+      if (profile && profile.CARD_NO !== undefined) {
         //console.log(" Detectado por CARD_NO - Asumiendo usuario");
         document.getElementById("message").innerHTML = "";
         openModifyUserPopup(profile);
-      } else if (profile && profile.data.CURRENT_ACCOUNT !== undefined) {
+      } else if (profile && profile.CURRENT_ACCOUNT !== undefined) {
         //console.log(" Detectado por CURRENT_ACCOUNT - Asumiendo admin");
         refreshAdminTable();
         adminTableModal.style.display = "block";
@@ -105,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   /* ----------SHARED ELEMENTS---------- */
   deleteBtn.onclick = function () {
-    delete_user(profile.data.PROFILE_CODE);
+    delete_user(profile.PROFILE_CODE);
   };
 
   closePasswordSpan.onclick = function () {
@@ -137,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("messageWrongPassword").innerHTML = "";
       document.getElementById("message").innerHTML = "";
 
-      let actualProfile = profile.data;
+      let actualProfile = profile;
 
 
       const profile_code = actualProfile.PROFILE_CODE;
@@ -221,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 /* ----------HOME---------- */
 function openModifyUserPopup(profile) {
-  console.log("openModifyUserPopup llamado con:", profile.data);
+  console.log("openModifyUserPopup llamado con:", profile);
 
   if (!profile) {
     console.error("Perfil no definido");
@@ -240,7 +239,7 @@ function openModifyUserPopup(profile) {
   // console.log("Modal encontrado:", modifyUserPopup);
 
   // Mapear los campos correctamente según lo que recibes
-  const userData = profile.data;
+  const userData = profile;
   if (!userData) {
     console.error("Datos de usuario no definidos");
     return;
@@ -268,7 +267,7 @@ function openModifyUserPopup(profile) {
 async function modifyUser() {
   profile = await get_profile();
 
-  const usuario = profile.data;
+  const usuario = profile;
 
   const profile_code = usuario.PROFILE_CODE;
   const name = document.getElementById("firstNameUser").value;
@@ -342,13 +341,13 @@ async function modifyUser() {
         document.getElementById("message").innerHTML = result.message;
         document.getElementById("message").style.color = "green";
 
-        profile.data.NAME_ = name;
-        profile.data.SURNAME = surname;
-        profile.data.EMAIL = email;
-        profile.data.USER_NAME = username;
-        profile.data.TELEPHONE = telephone;
-        profile.data.CARD_NO = card_no;
-        profile.data.GENDER = gender;
+        profile.NAME_ = name;
+        profile.SURNAME = surname;
+        profile.EMAIL = email;
+        profile.USER_NAME = username;
+        profile.TELEPHONE = telephone;
+        profile.CARD_NO = card_no;
+        profile.GENDER = gender;
 
         if (profile && profile.CURRENT_ACCOUNT !== undefined) {
           refreshAdminTable();
@@ -456,7 +455,7 @@ function openModifyAdminPopup() {
   const actualProfile = get_profile();
   let modifyAdminPopup = document.getElementById("modifyAdminPopup");
 
-  const usuario = actualProfile.data;
+  const usuario = actualProfile;
 
   //DEBUG console.log("User username: ", usuario.username);
   /*console.log("Esto son los datos de los textfields" + usuario.PROFILE_CODE,usuario.NAME_,usuario.SURNAME,usuario.EMAIL,
@@ -476,7 +475,7 @@ function openModifyAdminPopup() {
 async function modifyAdmin() {
   const actualProfile = await get_profile();
 
-  const usuario = actualProfile.data;
+  const usuario = actualProfile;
 
   const profile_code = usuario.PROFILE_CODE;
   const name = document.getElementById("firstNameAdmin").value;
@@ -617,7 +616,7 @@ async function logout() {
 // Asegúrate de que la función esté definida antes de usarla
 async function get_profile() {
   try {
-    const response = await fetch("../../api/CheckSession.php", {
+    const response = await fetch("../../api/GetProfile.php", {
       method: "GET",
       credentials: "include",
     });
