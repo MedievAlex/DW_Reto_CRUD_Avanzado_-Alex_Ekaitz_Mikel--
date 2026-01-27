@@ -934,10 +934,18 @@ footer p {
 
 /***************REVIEWS***************/
 .reviews {
-  padding: 10px;
+  margin: 20px;
+  padding: 50px;
+
+  height: calc(100vh / 2);
 
   display: flex;
   flex-flow: column;
+  
+  border-radius: 15px;
+  background-color: var(--clear-grey-color);
+  
+  overflow-x: scroll;
 }
 
 .gameReview:nth-of-type(odd) {
@@ -955,21 +963,28 @@ footer p {
   display: flex;
   flex-flow: row;
 
-  border-radius: 15px;
+  border-radius: 20px;
 }
 
 .gameReview .reviewUser{
   margin: 10px;
-
-  color: var(--yellow-color);
 }
 
-.gameReview .reviewUser:first-child h3 {
+.gameReview .reviewUserName {
+  font-weight: bold;
   color: var(--golden-color);
+}
+
+.gameReview .reviewDate {
+  font-style: italic;
+  color: var(--yellow-color);
 }
 
 .gameReview .reviewData{
   margin: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  width: 100%;
 
   display: flex;
   flex-flow: column;
@@ -981,6 +996,10 @@ footer p {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+}
+
+.reviewData .reviewTopData:nth-child(1) {
+  font-weight: bold;
 }
 
 .reviewData .reviewBottomData {
