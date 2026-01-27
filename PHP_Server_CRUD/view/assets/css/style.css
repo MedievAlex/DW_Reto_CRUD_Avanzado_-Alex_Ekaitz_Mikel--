@@ -674,12 +674,19 @@ li {
 
 /***************************************************NEW STYLES************************************************/
 :root {
+  --test-color1: rgb(36, 166, 0);
+  --test-color2: rgb(9, 14, 186);
+  --test-color3: rgb(240, 18, 18);
+
   /******GENERAL******/
   --background-color: #f1f1f1;
   --header-color: rgb(137, 140, 142);
-  --footer-color: rgb(51,51,51);
+  --footer-color: rgb(51, 51, 51);
+  --clear-grey-color: rgb(215, 216, 221);
 
   /******MENU******/
+  --menu-color: rgb(34, 32, 32);
+  --selected-option-color: rgb(0, 95, 163);
 
   /******CARDS******/
   --odd-card-color: rgb(28, 28, 50);
@@ -687,15 +694,14 @@ li {
   --border-card-color: rgb(144, 144, 144);
   --hover-card-color: rgb(70, 88, 105);
 
+  --clear-odd-card-color: rgb(82, 82, 157);
+  --clear-even-card-color: rgb(58, 58, 147);
+
   --golden-color: rgb(248, 204, 45);
   --yellow-color: rgb(247, 222, 133);
 }
 
 /***************HEADER & FOOTER***************/
-header {
-  /*position: fixed; Para mantener el header visible todo el tiempo (Se pega a lo de abajo)*/
-}
-
 footer p {
   text-align: justify;
   text-justify: inter-word;
@@ -713,9 +719,9 @@ footer p {
   width: 300px;
   height: 50px;
   text-align: center;
-  border: 4px solid #222020;
+  border: 4px solid var(--menu-color);
   border-radius: 10px;
-  background-color: #222020;
+  background-color: var(--menu-color);
   z-index: 99;
 }
 
@@ -754,11 +760,11 @@ footer p {
 .dropdown-content a:hover {
   font-weight: bold;
   color: white;
-  background-color: #005fa3;
+  background-color: var(--selected-option-color);
   transition-duration: 0.5s;
 }
 
-.logoutIcon{
+.logoutIcon {
   height: 10%;
   width: 10%;
 }
@@ -782,6 +788,9 @@ footer p {
 
   margin: 10px;
   padding: 10px;
+
+  border-radius: 15px;
+  background-color: var(--clear-grey-color);
 
   overflow-y: scroll;
 }
@@ -873,6 +882,107 @@ footer p {
 
   font-style: italic;
   color: var(--yellow-color);
+}
+
+/***************LISTAS***************/
+.myListsMain {
+  display: grid;
+
+  grid-template-columns: 1fr 3fr;
+}
+
+.lists {
+  margin: 10px;
+}
+
+.listNames {
+  padding: 10px;
+
+  border-radius: 15px;
+  background-color: var(--clear-grey-color);
+}
+
+.listNames .list {
+  display: flex;
+  justify-content: space-between;
+
+  cursor: pointer;
+}
+
+.editIcon img {
+  height: 20px;
+  width: 20px;
+}
+
+.editIcon img:hover {
+  animation: heartBeat 1s infinite;
+}
+
+.listGames {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+
+  margin: 10px;
+  padding: 10px;
+}
+
+/***************REVIEWS***************/
+.reviews {
+  padding: 10px;
+
+  display: flex;
+  flex-flow: column;
+}
+
+.gameReview:nth-of-type(odd) {
+  background-color: var(--clear-odd-card-color);
+}
+
+.gameReview:nth-of-type(even) {
+  background-color: var(--clear-even-card-color);
+}
+
+.gameReview {
+  margin: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-flow: row;
+
+  border-radius: 15px;
+}
+
+.gameReview .reviewUser{
+  margin: 10px;
+
+  color: var(--yellow-color);
+}
+
+.gameReview .reviewUser:first-child h3 {
+  color: var(--golden-color);
+}
+
+.gameReview .reviewData{
+  margin: 10px;
+
+  display: flex;
+  flex-flow: column;
+
+  color: white;
+}
+
+.reviewData .reviewTopData {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+.reviewData .reviewBottomData {
+  display: flex;
+  flex-wrap: wrap;
+  
+  text-align: justify;
 }
 
 /***************ANIMATIONS***************/
