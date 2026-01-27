@@ -48,7 +48,7 @@ CREATE TABLE REVIEW_(
     PROFILE_CODE INT,
     V_CODE INT,
     R_SCORE INT,
-    R_DESCRIPTION VARCHAR(300),
+    R_DESCRIPTION VARCHAR(500),
     R_DATE DATE,
     PRIMARY KEY (PROFILE_CODE, V_CODE),
     FOREIGN KEY (PROFILE_CODE) REFERENCES PROFILE_(PROFILE_CODE) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -123,10 +123,10 @@ INSERT INTO LISTED_ (L_NAME, PROFILE_CODE, V_CODE) VALUES
 INSERT INTO REVIEW_ (PROFILE_CODE, V_CODE, R_SCORE, R_DESCRIPTION, R_DATE) VALUES
     (1, 13, 2, "Played a bit, thought it was fun. However this game CONTINUES to reinstall itself on my computer. For that I do not recommend it. I have uninstalled it over a dozen times and it keeps coming back, at this point I consider it a virus.", '2025-8-8'), -- Halo Infinite --
     (1, 1, 9, "If Hayao Miyazaki directed a video game I feel like it'd be something like Owlboy. By which I mean; stunning visuals, incredible soundtrack and a wonderful story. The three intertwine so well that I'd consider it to be my Ocarina of Time for Pixel Platformers. And an indie game that's so damn beautiful it made me write my first review.", '2020-10-22'), -- Owlboy --
-    (1, 9, 10, "It is not only graphically stunning, it is funny and beautiful. It is a masterpiece that, in my opinion, is the best game of all time.", '2025-8-8'); -- ASTRO BOT --
+    (1, 9, 10, "It is not only graphically stunning, it is funny and beautiful. It is a masterpiece that, in my opinion, is the best game of all time.", '2025-8-8'), -- ASTRO BOT --
     (3, 9, 9, "GOTY.", '2023-12-2'), -- ASTRO BOT --
-    (3 , 11, 7, "They dont make games llike this now a day.", '2026-1-5'), -- Call of Duty: Black Ops II --
-    (5, 26, 5, "Mid game.", '2023-7-30') -- God of War Ragnarok --
+    (3, 11, 7, "They dont make games llike this now a day.", '2026-1-5'), -- Call of Duty: Black Ops II --
+    (5, 26, 5, "Mid game.", '2023-7-30'); -- God of War Ragnarok --
 
 -- FUNCTIONS & PROCEDURES --
 
