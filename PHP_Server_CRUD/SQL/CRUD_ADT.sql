@@ -107,18 +107,18 @@ INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES
     ("Hi-Fi Rush", '2023-1-25', 'XBOX', 'PEGI12'); -- 31 -- 
     
 INSERT INTO LISTED_ (L_NAME, PROFILE_CODE, V_CODE) VALUES
-    ('NINTENDO', 1, 1),
-    ('NINTENDO', 1, 14),
-    ('NINTENDO', 1, 19),
-    ('NINTENDO', 1, 23),
-    ('PLAYSTATION', 1, 10),
-    ('PLAYSTATION', 1, 28),
-    ('PLAYSTATION', 1, 6),
-    ('PC', 1, 15),
-    ('PC', 1, 25),
-    ('PC', 1, 17),
-    ('XBOX', 1, 13),
-    ('XBOX', 1, 31);
+    ('NINTENDO', 1, 1), -- Owlboy --
+    ('NINTENDO', 1, 14), -- Balatro --
+    ('NINTENDO', 1, 19), -- Hades --
+    ('NINTENDO', 1, 23), -- Cult of The Lamb --
+    ('PLAYSTATION', 1, 10), -- Call of Duty: Black Ops II --
+    ('PLAYSTATION', 1, 28), -- Life is Strange --
+    ('PLAYSTATION', 1, 6), -- Detroit: Become Human --
+    ('PC', 1, 15), -- Balatro --
+    ('PC', 1, 25), -- Cult of The Lamb --
+    ('PC', 1, 17), -- Library Of Ruina --
+    ('XBOX', 1, 13), -- Halo Infinite --
+    ('XBOX', 1, 31); -- Hi-Fi Rush --
 
 INSERT INTO REVIEW_ (PROFILE_CODE, V_CODE, R_SCORE, R_DESCRIPTION, R_DATE) VALUES
     (1, 13, 2, "Played a bit, thought it was fun. However this game CONTINUES to reinstall itself on my computer. For that I do not recommend it. I have uninstalled it over a dozen times and it keeps coming back, at this point I consider it a virus.", '2025-8-8'), -- Halo Infinite --
