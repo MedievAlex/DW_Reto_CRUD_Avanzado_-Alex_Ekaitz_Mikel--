@@ -74,15 +74,22 @@ class DBImplementation
     return $result;
   }
 
-  public function get_profile($id, $type)
+  public function get_user($id)
   {
-    if ($type === "admin") {
-      $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ A ON P.PROFILE_CODE=A.PROFILE_CODE
-            WHERE P.PROFILE_CODE = :id";
-    } else {
-      $query = "SELECT * FROM PROFILE_ P JOIN USER_ U ON P.PROFILE_CODE=U.PROFILE_CODE
-            WHERE P.PROFILE_CODE = :id";
-    }
+    $query = "SELECT * FROM PROFILE_ P JOIN USER_ U ON P.PROFILE_CODE=U.PROFILE_CODE WHERE P.PROFILE_CODE = :id";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result;
+  }
+
+  public function get_admin($id)
+  {
+    $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ U ON P.PROFILE_CODE=A.PROFILE_CODE WHERE P.PROFILE_CODE = :id";
 
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(":id", $id);

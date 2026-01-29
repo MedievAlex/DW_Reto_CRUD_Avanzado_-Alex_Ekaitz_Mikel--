@@ -30,9 +30,14 @@ class controller
         return $this->DBImplementation->create_user($username, $password);
     }
 
-    public function get_profile($id, $type)
+    public function get_user($id)
     {
-        return $this->DBImplementation->get_profile($id, $type);
+        return $this->DBImplementation->get_user($id);
+    }
+
+    public function get_admin($id)
+    {
+        return $this->DBImplementation->get_admin($id);
     }
 
     public function get_all_users()

@@ -11,10 +11,16 @@ require_once '../controller/controller.php';
 requireLogin();
 
 try {
-    $userData = getUserData();
-
     $controller = new controller();
-    $result = $controller->get_profile($userData["id"], $userData["type"]);
+
+    if (isset($_GET['pcode'])) {
+        $id = $_GET['pcode'];
+    } else {
+        $userData = getUserData();
+        $id = $userData["id"];
+    }
+
+    $result = $controller->get_user($userData["id"]);
 
     if ($result) {
         unset($result['PSWD']);
@@ -22,16 +28,29 @@ try {
         http_response_code(200);
         echo json_encode([
             'success' => true,
-            'message' => 'Profile retrieved successfully',
+            'message' => 'User retrieved successfully',
             'data' => $result
         ], JSON_UNESCAPED_UNICODE);
     } else {
-        http_response_code(404);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Profile not found',
-            'data' => []
-        ], JSON_UNESCAPED_UNICODE);
+        $result = $controller->get_admin($userData["id"]);
+
+        if ($result) {
+            unset($result['PSWD']);
+
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Admin retrieved successfully',
+                'data' => $result
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Profile not found',
+                'data' => []
+            ], JSON_UNESCAPED_UNICODE);
+        }
     }
 } catch (Exception $e) {
     http_response_code(500);
