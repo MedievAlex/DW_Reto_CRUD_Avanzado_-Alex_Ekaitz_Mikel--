@@ -79,13 +79,13 @@ INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES
     ("Owlboy", '2016-11-1', 'PC', 'PEGI3'), -- 3 --
     ("Owlboy", '2016-11-1', 'XBOX', 'PEGI3'), -- 4 --
     ("Animal Crossing New Horizons", '2020-5-20', 'NINTENDO', 'PEGI6'), -- 5 -- 
-    ("Detroit: Become Human", '2018-5-25', 'PLAYSTATION', 'PEGI16'), -- 6 -- 
-    ("Detroit: Become Human", '2018-5-25', 'PC', 'PEGI16'), -- 7 -- 
-    ("Detroit: Become Human", '2018-5-25', 'XBOX', 'PEGI16'), -- 8 -- 
+    ("Detroit Become Human", '2018-5-25', 'PLAYSTATION', 'PEGI16'), -- 6 -- 
+    ("Detroit Become Human", '2018-5-25', 'PC', 'PEGI16'), -- 7 -- 
+    ("Detroit Become Human", '2018-5-25', 'XBOX', 'PEGI16'), -- 8 -- 
     ("ASTRO BOT", '2024-9-6', 'PLAYSTATION', 'PEGI3'), -- 9 -- 
-    ("Call of Duty: Black Ops II", '2012-11-13', 'PLAYSTATION', 'PEGI18'), -- 10 -- 
-    ("Call of Duty: Black Ops II", '2012-11-13', 'PC', 'PEGI18'), -- 11 --
-    ("Call of Duty: Black Ops II", '2012-11-13', 'XBOX', 'PEGI18'), -- 12 -- 
+    ("Call of Duty Black Ops II", '2012-11-13', 'PLAYSTATION', 'PEGI18'), -- 10 -- 
+    ("Call of Duty Black Ops II", '2012-11-13', 'PC', 'PEGI18'), -- 11 --
+    ("Call of Duty Black Ops II", '2012-11-13', 'XBOX', 'PEGI18'), -- 12 -- 
     ("Halo Infinite", '2021-12-8', 'XBOX', 'PEGI16'), -- 13 -- 
     ("Balatro", '2024-2-20', 'NINTENDO', 'PEGI12'), -- 14 -- 
     ("Balatro", '2024-2-20', 'PC', 'PEGI12'), -- 15 -- 
@@ -100,11 +100,11 @@ INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES
     ("Cult of The Lamb", '2022-8-11', 'PLAYSTATION', 'PEGI12'), -- 24 -- 
     ("Cult of The Lamb", '2022-8-11', 'PC', 'PEGI12'), -- 25 -- 
     ("God of War Ragnarok", '2022-11-9', 'PLAYSTATION', 'PEGI18'), -- 26 -- 
-    ("Hellblade: Senua's Sacrifice", '2017-8-8', 'PLAYSTATION', 'PEGI18'), -- 27 -- 
+    ("Hellblade Senua's Sacrifice", '2017-8-8', 'PLAYSTATION', 'PEGI18'), -- 27 -- 
     ("Life is Strange", '2015-1-30', 'PLAYSTATION', 'PEGI16'), -- 28 --  
     ("Life is Strange", '2015-1-30', 'PC', 'PEGI16'), -- 29 --  
     ("Life is Strange", '2015-1-30', 'XBOX', 'PEGI16'), -- 30 -- 
-    ("Hi-Fi Rush", '2023-1-25', 'XBOX', 'PEGI12'); -- 31 -- 
+    ("Hi Fi Rush", '2023-1-25', 'XBOX', 'PEGI12'); -- 31 -- 
     
 INSERT INTO LISTED_ (L_NAME, PROFILE_CODE, V_CODE) VALUES
     ('NINTENDO', 1, 1), -- Owlboy --
