@@ -298,13 +298,14 @@ async function create_cards() {
     let juegosSinPlataforma = 0;
     games.forEach(game => {
       const nombre =  game.V_NAME || "Sin nombre";
+      const imagen = game.V_NAME.replace(/ /g,"").toLowerCase();
       const pegi =  game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
       const plataforma = game.V_PLATFORM || "Plataforma desconocida";
       const gameHTML = `
         <div class="game">
                     <div class="gameCover">
-                        <img src="../assets/img/covers/LibraryOfRuina.png" />
+                        <img src="../assets/img/covers/${imagen}.png" />
                     </div>
                     <div class="heartIcon">
                         <img class="corazon" src="../assets/img/icons/red_heart.png" />

@@ -110,6 +110,7 @@ async function get_videogame(videogame_id) {
     alert("Error al obtener la review");
   }
 }
+
 //falta arreglar lo de el nombre del juego mas lo del profile
 async function cargar_Reviews() {
   const reviews = await get_all_reviews();
