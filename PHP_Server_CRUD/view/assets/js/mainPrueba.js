@@ -292,10 +292,6 @@ async function create_cards() {
     const contenedores = ["PC", "NINTENDO", "XBOX", "PLAYSTATION"];
     contenedores.forEach((id) => {
       const elemento = document.getElementById(id);
-      //console.log(`Contenedor ${id}:`, elemento ? "✅ Existe" : "❌ NO existe");
-    });
-    contenedores.forEach((id) => {
-      const elemento = document.getElementById(id);
       if (elemento) elemento.innerHTML = "";
     });
     //let juegosProcesados = 0;
@@ -304,7 +300,7 @@ async function create_cards() {
       const nombre =  game.V_NAME || "Sin nombre";
       const pegi =  game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
-      const plataforma = game.V_PLATAFORM || "Plataforma desconocida";
+      const plataforma = game.V_PLATFORM || "Plataforma desconocida";
       const gameHTML = `
         <div class="game">
                     <div class="gameCover">

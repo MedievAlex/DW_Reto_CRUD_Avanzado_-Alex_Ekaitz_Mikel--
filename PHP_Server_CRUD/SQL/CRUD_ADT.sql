@@ -131,7 +131,6 @@ INSERT INTO REVIEW_ (PROFILE_CODE, V_CODE, R_SCORE, R_DESCRIPTION, R_DATE) VALUE
     (5, 26, 5, "Mid game.", '2023-7-30'); -- God of War Ragnarok --
 
 -- FUNCTIONS & PROCEDURES --
-
 DELIMITER //
 CREATE PROCEDURE RegistrarUsuario( IN p_username VARCHAR(30), IN p_pswd VARCHAR(255))
 BEGIN
