@@ -303,24 +303,27 @@ async function create_cards() {
       const release = game.V_RELEASE || "Fecha desconocida";
       const plataforma = game.V_PLATFORM || "Plataforma desconocida";
       const gameHTML = `
-        <div class="game">
+                  <div class="game">
                     <div class="gameCover">
                         <img src="../assets/img/covers/${imagen}.png" />
                     </div>
-                    <div class="heartIcon">
-                        <img class="corazon" src="../assets/img/icons/red_heart.png" />
+                    <div class="data">
+                        <div class="gameData">
+                            <div class="gameTitle">
+                                <h3>${nombre}</h3>
+                            </div>
+                            <div class="gamePEGI">
+                                ${pegi}
+                            </div>
+                            <div class="gameRelease">
+                                Release: ${release}
+                            </div>
+                        </div>
+                        <div class="heartIcon">
+                            <img class="corazon" src="../assets/img/icons/red_heart.png" />
+                        </div>
                     </div>
-                    <div class="gameData">
-                        <div class="gameTitle">
-                            <h3>${nombre}</h3>
-                        </div>
-                        <div class="gamePEGI">
-                            ${pegi}
-                        </div>
-                        <div class="gameRelease">
-                            Release: ${release}
-                        </div>
-                    </div>
+                </div>
       `;
       let contenedorId = null;
       if (plataforma.includes("PC")) {

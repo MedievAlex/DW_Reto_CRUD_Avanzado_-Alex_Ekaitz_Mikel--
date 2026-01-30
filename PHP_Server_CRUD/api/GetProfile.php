@@ -20,7 +20,7 @@ try {
         $id = $userData["id"];
     }
 
-    $result = $controller->get_user($userData["id"]);
+    $result = $controller->get_user($id);
 
     if ($result) {
         unset($result['PSWD']);
@@ -32,7 +32,7 @@ try {
             'data' => $result
         ], JSON_UNESCAPED_UNICODE);
     } else {
-        $result = $controller->get_admin($userData["id"]);
+        $result = $controller->get_admin($id);
 
         if ($result) {
             unset($result['PSWD']);

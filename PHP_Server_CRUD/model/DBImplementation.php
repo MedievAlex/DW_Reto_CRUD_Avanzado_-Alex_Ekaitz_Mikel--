@@ -89,7 +89,7 @@ class DBImplementation
 
   public function get_admin($id)
   {
-    $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ U ON P.PROFILE_CODE=A.PROFILE_CODE WHERE P.PROFILE_CODE = :id";
+    $query = "SELECT * FROM PROFILE_ P JOIN ADMIN_ A ON P.PROFILE_CODE=A.PROFILE_CODE WHERE P.PROFILE_CODE = :id";
 
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(":id", $id);

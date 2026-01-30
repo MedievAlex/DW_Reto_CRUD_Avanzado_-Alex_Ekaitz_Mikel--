@@ -110,7 +110,19 @@ async function get_videogame(videogame_id) {
     alert("Error al obtener la review");
   }
 }
-
+async function get_profile(profile_code) {
+  const response = await fetch(`../../api/GetProfile.php?pcode=${encodeURIComponent(profile_code)}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const result = await response.json();
+  console.log(result.data);
+  if (response.ok) {
+    return result.data;
+  } else {
+    alert("Error al obtener el profile");
+  }
+}
 //falta arreglar lo de el nombre del juego mas lo del profile
 async function cargar_Reviews() {
   const reviews = await get_all_reviews();
@@ -118,14 +130,13 @@ async function cargar_Reviews() {
 
   for (const review of reviews) {
     const game = await get_videogame(review.V_CODE);
-    const profile = "asanchez";
-    //const profile = await get_profile(review.PROFILE_CODE);
+    const profile = await get_profile(review.PROFILE_CODE);
 
     container.innerHTML += `
             <div class="gameReview">
                 <div class="reviewUser">
                     <div class="reviewUserName">
-                        ${profile}
+                        ${profile.USER_NAME}
                     </div>
                     <div class="reviewDate">
                         ${review.R_DATE}
@@ -134,7 +145,7 @@ async function cargar_Reviews() {
                 <div class="reviewData">
                     <div class="reviewTopData">
                         <div>${game.V_NAME}</div>
-                        <div>${review.R_SCORE}</div>
+                        <div>${review.R_SCORE}/10</div>
                     </div>
                     <div class="reviewBottomData">
                         <p>${review.R_DESCRIPTION}</p> 
