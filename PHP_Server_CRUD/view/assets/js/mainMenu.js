@@ -10,7 +10,6 @@ async function get_profile() {
     credentials: "include",
   });
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     return result.data;
   } else {
@@ -21,7 +20,6 @@ async function get_profile() {
 async function get_all_videogames() {
   const response = await fetch("../../api/Videogames.php");
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     return result.data;
   } else {

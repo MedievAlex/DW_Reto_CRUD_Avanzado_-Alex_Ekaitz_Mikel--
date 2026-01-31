@@ -1,5 +1,7 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  await cargar_Reviews();
+window.addEventListener("sessionVerified", async () => {
+  let profile = await get_profile();
+  document.getElementById("adjustDataID").innerHTML = profile.USER_NAME;
+  cargar_Reviews();
 });
 
 async function get_all_reviews() {
@@ -85,8 +87,12 @@ async function update_review(score, date, description) {
     method: "PUT",
     body: new URLSearchParams(form),
   });
-  const result = await response.json();
-  alert("Se ha modificado la review correctamente");
+
+  if (!response.ok) {
+    alert("Error al modificar la review.");
+  } else {
+    alert("Se ha modificado la review correctamente");
+  }
 }
 async function delete_review(videogame_code) {
   if (!confirm("Are you sure you want to delete this review?")) return;
@@ -105,29 +111,28 @@ async function get_videogame(videogame_id) {
   );
   const result = await response.json();
   if (response.ok) {
-    console.log(result.data);
     return result.data;
   } else {
     alert("Error al obtener la review");
   }
 }
-async function get_profile(profile_code) {
-  const response = await fetch(
-    `../../api/GetProfile.php?pcode=${encodeURIComponent(profile_code)}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+async function get_profile(profilecode = null) {
+  const url = profilecode
+    ? `../../api/GetProfile.php?pcode=${encodeURIComponent(profilecode)}`
+    : "../../api/GetProfile.php";
+
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     return result.data;
   } else {
     alert("Error al obtener el profile");
   }
 }
-//falta arreglar lo de el nombre del juego mas lo del profile
+
 async function cargar_Reviews() {
   const reviews = await get_all_reviews();
   const container = document.getElementById("reviews");
@@ -152,7 +157,7 @@ async function cargar_Reviews() {
                         <div>${review.R_SCORE}/10</div>
                     </div>
                     <div class="reviewBottomData">
-                        <p>${review.R_DESCRIPTION}</p> 
+                        <p>${review.R_DESCRIPTION}</p>
                     </div>
                 </div>
             </div>`;

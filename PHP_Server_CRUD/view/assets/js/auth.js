@@ -29,11 +29,14 @@ async function comprobarSession() {
       if (PUBLIC_PAGES.includes(currentPage)) {
         window.location.href = "menu.html";
       } else if (PRIVATE_PAGES.includes(currentPage)) {
+        document.body.style.visibility = "visible";
         window.dispatchEvent(new Event("sessionVerified"));
       }
     } else {
       if (PRIVATE_PAGES.includes(currentPage)) {
         window.location.href = LOGIN_PAGE;
+      } else {
+        document.body.style.visibility = "visible";
       }
     }
   } catch (error) {
@@ -41,6 +44,8 @@ async function comprobarSession() {
 
     if (PRIVATE_PAGES.includes(currentPage)) {
       window.location.href = LOGIN_PAGE;
+    } else {
+      document.body.style.visibility = "visible";
     }
   }
 }

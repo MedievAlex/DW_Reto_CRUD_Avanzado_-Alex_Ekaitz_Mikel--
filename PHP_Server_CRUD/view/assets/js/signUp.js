@@ -24,12 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Cambia Content-Type a application/x-www-form-urlencoded
       // porque PHP espera datos de formulario tradicional
       const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
+      formData.append("username", username);
+      formData.append("password", password);
 
       const response = await fetch("../../api/AddUser.php", {
         method: "POST",
-        body: formData
+        body: formData,
       });
 
       const result = await response.json();
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         parrafo.innerText = result.message;
         parrafo.style.color = "green";
-        
+
         if (response.status === 201) {
           localStorage.setItem("actualProfile", JSON.stringify(result.data));
           // Pequeño retraso para que el usuario vea el mensaje
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         parrafo.innerText = result.message || "Error desconocido";
         parrafo.style.color = "red";
-        
+
         setTimeout(() => {
           parrafo.innerText = "";
         }, 5000);
