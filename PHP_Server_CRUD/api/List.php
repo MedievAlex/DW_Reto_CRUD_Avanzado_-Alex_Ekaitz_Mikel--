@@ -56,18 +56,18 @@ try {
       $errors = [];
 
       $profile_code = $userData['id'];
-      $videogame_code = $_POST['vcode'] ?? '';
-      $list = htmlspecialchars(trim($_POST['list'] ?? ''), ENT_QUOTES, 'UTF-8');
+      $videogame_code = isset($_POST['vcode']) ? trim($_POST['vcode']) : '';
+      $list = isset($_POST['list']) ? htmlspecialchars(trim($_POST['list']), ENT_QUOTES, 'UTF-8') : '';
 
-      if (empty($videogame_code) || !is_numeric($videogame_code)) {
-        $errors[] = "Videogame ID is required and must be numeric";
+      if (empty($videogame_code)) {
+        $errors[] = "Videogame ID is required";
+      } elseif (!is_numeric($videogame_code)) {
+        $errors[] = "Videogame ID must be numeric";
       }
 
       if (empty($list)) {
         $errors[] = "List name is required";
-      }
-
-      if (strlen($list) > 100) {
+      } elseif (strlen($list) > 100) {
         $errors[] = "List name is too long (max 100 characters)";
       }
 
@@ -79,6 +79,21 @@ try {
           'data' => []
         ], JSON_UNESCAPED_UNICODE);
         exit();
+      }
+
+      $existingList = $controller->get_list($profile_code, $list);
+      if ($existingList && is_array($existingList) && count($existingList) > 0) {
+        foreach ($existingList as $item) {
+          if (isset($item['V_CODE']) && (string)$item['V_CODE'] === (string)$videogame_code) {
+            http_response_code(409);
+            echo json_encode([
+              'success' => false,
+              'message' => 'Game already exists in this list',
+              'data' => []
+            ], JSON_UNESCAPED_UNICODE);
+            exit();
+          }
+        }
       }
 
       $listed = new Listed($profile_code, $videogame_code, $list);

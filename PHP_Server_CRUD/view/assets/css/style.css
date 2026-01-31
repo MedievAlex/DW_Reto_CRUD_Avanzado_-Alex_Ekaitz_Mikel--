@@ -874,25 +874,6 @@ footer p {
   justify-content: flex-end;
 }
 
-.game .heartIcon img {
-  height: 30px;
-  width: 30px;
-
-  filter: grayscale(100%);
-
-  transition: filter 0.1s linear;
-}
-
-.game .heartIcon img:hover {
-  filter: grayscale(70%);
-
-  animation: heartBeat 1s infinite;
-}
-
-.game .heartIcon img:active {
-  filter: grayscale(0%);
-}
-
 .game .gameData {
   padding: 10px;
   text-align: start;
@@ -912,6 +893,74 @@ footer p {
 
   font-style: italic;
   color: var(--yellow-color);
+}
+
+/***************GAME ACTION BUTTONS***************/
+.game .heartIcon button,
+.listGame .listGameActions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game .heartIcon button:hover,
+.listGame .listGameActions button:hover {
+  background-color: rgba(248, 204, 45, 0.2);
+  transform: scale(1.1);
+  padding: 4px;
+}
+
+.game .heartIcon img {
+  height: 30px;
+  width: 30px;
+  display: block;
+  filter: grayscale(100%);
+  transition: filter 0.1s linear;
+}
+
+.game .heartIcon button:hover img {
+  filter: grayscale(0%);
+  animation: heartBeat 1s infinite;
+}
+
+/***************LIST GAME ACTIONS***************/
+.listGame .listGameActions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+}
+
+.listGame .listGameActions button img {
+  height: 25px;
+  width: 25px;
+  display: block;
+  transition: all 0.2s ease-in-out;
+}
+
+.listGame .listGameActions .removeFromList img {
+  filter: brightness(0) invert(1);
+}
+
+.listGame .listGameActions .removeFromList:hover img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 5px var(--golden-color));
+  animation: heartBeat 1s infinite;
+}
+
+.listGame .listGameActions .addToList img {
+  filter: grayscale(100%);
+}
+
+.listGame .listGameActions .addToList:hover img {
+  filter: grayscale(0%);
+  animation: heartBeat 1s infinite;
 }
 
 /***************LISTAS***************/

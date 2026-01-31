@@ -1,11 +1,12 @@
 window.addEventListener("sessionVerified", async () => {
   let profile = await get_profile();
   document.getElementById("adjustDataID").innerHTML = profile.USER_NAME;
-  await cargar_listas();
+  await load_lists();
 });
 
 let todasLasListas = [];
 let listaSeleccionada = null;
+let nombreListaActual = null;
 
 function setup_event_listeners() {
   const renameButtons = document.querySelectorAll(".rename");
@@ -27,8 +28,9 @@ function setup_event_listeners() {
 
       this.style.fontWeight = "bold";
       listaSeleccionada = this;
+      nombreListaActual = listName;
 
-      await mostrar_juegos_de_lista(listName);
+      await show_games_from_list(listName);
     };
   });
 
@@ -65,8 +67,12 @@ function setup_event_listeners() {
             }
           }
 
+          if (oldname === nombreListaActual) {
+            nombreListaActual = newnameTrimmed;
+          }
+
           if (listaSeleccionada === listItem) {
-            await mostrar_juegos_de_lista(newnameTrimmed);
+            await show_games_from_list(newnameTrimmed);
           }
         } else {
           alert("El nombre introducido ya existe.");
@@ -97,17 +103,89 @@ function setup_event_listeners() {
 
         if (listaSeleccionada === listItem) {
           listaSeleccionada = null;
+          nombreListaActual = null;
 
           const nuevaPrimeraLista = document.querySelector(".list");
           if (nuevaPrimeraLista) {
             nuevaPrimeraLista.click();
           } else {
-            limpiar_juegos();
+            clean_games();
           }
         }
       }
     };
   });
+}
+
+function setup_game_buttons() {
+  const addToListButtons = document.querySelectorAll(".addToList");
+  addToListButtons.forEach((button) => {
+    button.onclick = async function (event) {
+      event.stopPropagation();
+      const gameDiv = this.closest(".game");
+      const gameId = gameDiv.dataset.gameId;
+      const gameName = gameDiv.querySelector(".gameTitle h3").textContent;
+
+      await manage_add_game(gameId, gameName);
+    };
+  });
+
+  const removeFromListButtons = document.querySelectorAll(".removeFromList");
+  removeFromListButtons.forEach((button) => {
+    button.onclick = async function (event) {
+      event.stopPropagation();
+      const gameDiv = this.closest(".game");
+      const gameId = gameDiv.dataset.gameId;
+      const gameName = gameDiv.querySelector(".gameTitle h3").textContent;
+
+      if (
+        confirm(
+          `¿Estás seguro de que quieres eliminar "${gameName}" de la lista "${nombreListaActual}"?`,
+        )
+      ) {
+        await delete_game_from_list(nombreListaActual, gameId);
+        await show_games_from_list(nombreListaActual);
+      }
+    };
+  });
+}
+
+async function manage_add_game(gameId, gameName) {
+  const nombreLista = prompt(
+    `Introduce el nombre de la lista donde añadir "${gameName}":`,
+  );
+
+  if (!nombreLista || nombreLista.trim() === "") {
+    return;
+  }
+
+  const nombreTrimmed = nombreLista.trim();
+  const listaExiste = todasLasListas.find(
+    (lista) => lista.L_NAME.toLowerCase() === nombreTrimmed.toLowerCase(),
+  );
+
+  if (!listaExiste) {
+    if (!confirm(`La lista "${nombreTrimmed}" no existe. ¿Quieres crearla?`)) {
+      return;
+    }
+  }
+
+  const resultado = await create_list(nombreTrimmed, gameId);
+  if (!resultado) return;
+
+  const mensaje = listaExiste
+    ? `Juego añadido a la lista "${nombreTrimmed}" correctamente`
+    : `Lista "${nombreTrimmed}" creada y juego añadido correctamente`;
+
+  alert(mensaje);
+
+  if (!listaExiste) {
+    await load_lists();
+  }
+
+  if (nombreTrimmed === nombreListaActual) {
+    await show_games_from_list(nombreListaActual);
+  }
 }
 
 async function get_profile(profilecode = null) {
@@ -128,14 +206,27 @@ async function get_profile(profilecode = null) {
 }
 
 async function get_lists() {
-  const response = await fetch("../../api/Lists.php", {
-    credentials: "include",
-  });
-  const result = await response.json();
-  if (response.ok) {
-    return result.data;
-  } else {
-    alert("Error al obtener las listas.");
+  try {
+    const response = await fetch("../../api/Lists.php", {
+      credentials: "include",
+    });
+
+    if (response.status === 404) {
+      return [];
+    }
+
+    const result = await response.json();
+
+    if (response.ok) {
+      return result.data;
+    } else {
+      alert("Error al obtener las listas.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error en get_lists:", error.message);
+    alert("Error de conexión al obtener las listas.");
+    return [];
   }
 }
 
@@ -173,13 +264,14 @@ async function create_list(list, videogame_id) {
   try {
     if (!list) {
       alert("El nombre de la lista es obligatorio");
-      return;
+      return null;
     }
 
     if (!videogame_id) {
       alert("El ID del videojuego es obligatorio");
-      return;
+      return null;
     }
+
     const form = new FormData();
     form.append("list", list);
     form.append("vcode", videogame_id);
@@ -191,19 +283,22 @@ async function create_list(list, videogame_id) {
     });
 
     const result = await response.json();
-    console.log(result.data);
-    if (!response.ok) {
-      alert(result.message || "Error al crear la lista");
-      return result;
+
+    if (response.status === 409) {
+      alert("El juego ya existe en esta lista");
+      return null;
     }
+
+    if (!response.ok) {
+      alert(result.message || "Error al crear/añadir a la lista");
+      return null;
+    }
+
     return result.data;
   } catch (error) {
     console.error("Error en create_list:", error.message);
-    return {
-      success: false,
-      message: "Error de conexión con el servidor",
-      data: [],
-    };
+    alert("Error de conexión con el servidor");
+    return null;
   }
 }
 
@@ -218,7 +313,6 @@ async function update_list(new_list, old_list) {
     credentials: "include",
   });
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     alert("Se ha modificado la lista correctamente");
   } else {
@@ -235,7 +329,6 @@ async function delete_list(list) {
     },
   );
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     alert("Eliminada la lista correctamente");
   } else {
@@ -252,7 +345,6 @@ async function delete_game_from_list(list, videogame_id) {
     },
   );
   const result = await response.json();
-  console.log(result.data);
   if (response.ok) {
     alert("Eliminado el juego de la lista correctamente");
   } else {
@@ -260,48 +352,43 @@ async function delete_game_from_list(list, videogame_id) {
   }
 }
 
-async function cargar_listas() {
+async function load_lists() {
   try {
     const lists = await get_lists();
     const container = document.getElementById("listas");
 
     todasLasListas = lists || [];
 
-    if (!lists || lists.length === 0) {
+    if (!lists?.length) {
       container.innerHTML = "<p>No hay listas disponibles</p>";
-      limpiar_juegos();
+      clean_games();
       return;
     }
 
-    container.innerHTML = "";
-
-    lists.forEach((list) => {
-      container.innerHTML += `
-        <li>
-          <div class="list">
-            <div class="nombreList">
-              ${list.L_NAME}
-            </div>
-            <div class="editIcon">
-              <img class="rename" src="../assets/img/icons/rename.png" />
-              <img class="delete" src="../assets/img/icons/delete.png" />
-            </div>
+    container.innerHTML = lists
+      .map(
+        (list) => `
+      <li>
+        <div class="list">
+          <div class="nombreList">${list.L_NAME}</div>
+          <div class="editIcon">
+            <img class="rename" src="../assets/img/icons/rename.png" />
+            <img class="delete" src="../assets/img/icons/delete.png" />
           </div>
-        </li>`;
-    });
+        </div>
+      </li>
+    `,
+      )
+      .join("");
 
     setup_event_listeners();
-
-    const primeraLista = document.querySelector(".list");
-    if (primeraLista) {
-      primeraLista.click();
-    }
+    document.querySelector(".list")?.click();
   } catch (error) {
     console.error("Error al cargar listas:", error);
     document.getElementById("listas").innerHTML = `
       <div class="error">
         <p>Error al cargar las listas: ${error.message}</p>
-        <button onclick="cargar_listas()">Reintentar</button>
+        <button onclick="load_lists()">Reintentar</button>
       </div>
     `;
   }
@@ -368,7 +455,7 @@ async function get_game_by_id(gameId) {
   }
 }
 
-async function mostrar_juegos_de_lista(listName) {
+async function show_games_from_list(listName) {
   try {
     const juegosIds = await get_games_from_list(listName);
     const listGamesSection = document.querySelector(".listGames");
@@ -410,9 +497,10 @@ async function mostrar_juegos_de_lista(listName) {
       const imagenNombre = nombre.replace(/ /g, "").toLowerCase();
       const pegi = game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
+      const gameId = game.V_CODE;
 
       gamesHTML += `
-        <div class="game">
+        <div class="game listGame" data-game-id="${gameId}">
           <div class="gameCover">
             <img src="../assets/img/covers/${imagenNombre}.png" alt="${nombre}" />
           </div>
@@ -428,8 +516,13 @@ async function mostrar_juegos_de_lista(listName) {
                 Release: ${release}
               </div>
             </div>
-            <div class="heartIcon">
-              <img class="corazon" src="../assets/img/icons/red_heart.png" />
+            <div class="listGameActions">
+              <button class="removeFromList" title="Eliminar de esta lista">
+                <img class="deleteIcon" src="../assets/img/icons/delete.png" alt="Eliminar" />
+              </button>
+              <button class="addToList" title="Añadir a otra lista">
+                <img class="corazon" src="../assets/img/icons/red_heart.png" alt="Añadir a lista" />
+              </button>
             </div>
           </div>
         </div>
@@ -437,6 +530,7 @@ async function mostrar_juegos_de_lista(listName) {
     });
 
     listGamesSection.innerHTML = gamesHTML;
+    setup_game_buttons();
   } catch (error) {
     console.error("Error al mostrar juegos de lista:", error);
     const listGamesSection = document.querySelector(".listGames");
@@ -447,7 +541,7 @@ async function mostrar_juegos_de_lista(listName) {
   }
 }
 
-function limpiar_juegos() {
+function clean_games() {
   const listGamesSection = document.querySelector(".listGames");
   if (listGamesSection) {
     listGamesSection.innerHTML = "";

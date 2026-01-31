@@ -66,7 +66,9 @@ async function create_cards() {
                             </div>
                         </div>
                         <div class="heartIcon">
-                            <img class="corazon" src="../assets/img/icons/red_heart.png" />
+                            <button title="Añadir a mis juegos">
+                                <img class="corazon" src="../assets/img/icons/red_heart.png" />
+                            </button>
                         </div>
                     </div>
                 </div>

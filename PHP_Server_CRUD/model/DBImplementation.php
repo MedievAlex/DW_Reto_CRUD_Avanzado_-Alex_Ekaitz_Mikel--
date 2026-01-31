@@ -217,10 +217,10 @@ class DBImplementation
     $query = "INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES (:name_, :release_, :platform_, :pegi_)";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':name_', $videogame->getName());
-    $stmt->bindParam(':release_', $videogame->getRelease());
-    $stmt->bindParam(':platform_', $videogame->getPlatform()->name);
-    $stmt->bindParam(':pegi_', $videogame->getPegi()->name);
+    $stmt->bindValue(':name_', $videogame->getName());
+    $stmt->bindValue(':release_', $videogame->getRelease());
+    $stmt->bindValue(':platform_', $videogame->getPlatform()->name);
+    $stmt->bindValue(':pegi_', $videogame->getPegi()->name);
 
     if ($stmt->execute()) {
       return $this->conn->lastInsertId();
@@ -234,11 +234,11 @@ class DBImplementation
     $query = "UPDATE VIDEOGAME_ SET V_NAME = :name_, V_RELEASE = :release_, V_PLATFORM = :platform_, V_PEGI = :pegi_ WHERE V_CODE = :id";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':id', $videogame->getVideogameCode());
-    $stmt->bindParam(':name_', $videogame->getName());
-    $stmt->bindParam(':release_', $videogame->getRelease());
-    $stmt->bindParam(':platform_', $videogame->getPlatform()->name);
-    $stmt->bindParam(':pegi_', $videogame->getPegi()->name);
+    $stmt->bindValue(':id', $videogame->getVideogameCode());
+    $stmt->bindValue(':name_', $videogame->getName());
+    $stmt->bindValue(':release_', $videogame->getRelease());
+    $stmt->bindValue(':platform_', $videogame->getPlatform()->name);
+    $stmt->bindValue(':pegi_', $videogame->getPegi()->name);
 
     return $stmt->execute();
   }
@@ -285,11 +285,11 @@ class DBImplementation
     $query = "INSERT INTO REVIEW_ (PROFILE_CODE, V_CODE, R_SCORE, R_DESCRIPTION, R_DATE) VALUES (:pcode, :vcode, :score, :description_, :date_)";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':pcode', $review->getProfileCode());
-    $stmt->bindParam(':vcode', $review->getVCode());
-    $stmt->bindParam(':score', $review->getScore());
-    $stmt->bindParam(':description_', $review->getDescription());
-    $stmt->bindParam(':date_', $review->getDate());
+    $stmt->bindValue(':pcode', $review->getProfileCode());
+    $stmt->bindValue(':vcode', $review->getVCode());
+    $stmt->bindValue(':score', $review->getScore());
+    $stmt->bindValue(':description_', $review->getDescription());
+    $stmt->bindValue(':date_', $review->getDate());
 
     if ($stmt->execute()) {
       return [
@@ -305,11 +305,11 @@ class DBImplementation
     $query = "UPDATE REVIEW_ SET R_SCORE = :score, R_DESCRIPTION = :description_, R_DATE = :date_ WHERE PROFILE_CODE = :pcode AND V_CODE = :vcode";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':pcode', $review->getProfileCode());
-    $stmt->bindParam(':vcode', $review->getVCode());
-    $stmt->bindParam(':score', $review->getScore());
-    $stmt->bindParam(':description_', $review->getDescription());
-    $stmt->bindParam(':date_', $review->getDate());
+    $stmt->bindValue(':pcode', $review->getProfileCode());
+    $stmt->bindValue(':vcode', $review->getVCode());
+    $stmt->bindValue(':score', $review->getScore());
+    $stmt->bindValue(':description_', $review->getDescription());
+    $stmt->bindValue(':date_', $review->getDate());
 
     return $stmt->execute();
   }
@@ -358,15 +358,15 @@ class DBImplementation
     $query = "INSERT INTO LISTED_ (PROFILE_CODE, V_CODE, L_NAME) VALUES (:pcode, :vcode, :l_name)";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':pcode', $listed->getProfileCode());
-    $stmt->bindParam(':vcode', $listed->getVideogameCode());
-    $stmt->bindParam(':l_name', $listed->getListName());
+    $stmt->bindValue(':pcode', $listed->getProfileCode());
+    $stmt->bindValue(':vcode', $listed->getVCode());
+    $stmt->bindValue(':l_name', $listed->getName());
 
     if ($stmt->execute()) {
       return [
         'profile_code' => $listed->getProfileCode(),
-        'videogame_code' => $listed->getVideogameCode(),
-        'list_name' => $listed->getListName()
+        'videogame_code' => $listed->getVCode(),
+        'list_name' => $listed->getName()
       ];
     }
     return false;
@@ -410,7 +410,7 @@ class DBImplementation
   }
   public function get_complete_user_data($profile_code)
   {
-    $query = "SELECT 
+    $query = "SELECT
                 P.PROFILE_CODE,
                 P.EMAIL,
                 P.USER_NAME,
@@ -420,8 +420,8 @@ class DBImplementation
                 P.SURNAME,
                 U.GENDER,
                 U.CARD_NO
-              FROM PROFILE_ AS P 
-              INNER JOIN USER_ AS U ON P.PROFILE_CODE = U.PROFILE_CODE 
+              FROM PROFILE_ AS P
+              INNER JOIN USER_ AS U ON P.PROFILE_CODE = U.PROFILE_CODE
               WHERE P.PROFILE_CODE = :profile_code";
 
     $stmt = $this->conn->prepare($query);
@@ -437,7 +437,7 @@ class DBImplementation
   }
   public function get_complete_admin_data($profile_code)
   {
-    $query = "SELECT 
+    $query = "SELECT
                 P.PROFILE_CODE,
                 P.EMAIL,
                 P.USER_NAME,
@@ -446,8 +446,8 @@ class DBImplementation
                 P.NAME_,
                 P.SURNAME,
                 A.CURRENT_ACCOUNT
-              FROM PROFILE_ AS P 
-              INNER JOIN ADMIN_ AS A ON P.PROFILE_CODE = A.PROFILE_CODE 
+              FROM PROFILE_ AS P
+              INNER JOIN ADMIN_ AS A ON P.PROFILE_CODE = A.PROFILE_CODE
               WHERE P.PROFILE_CODE = :profile_code";
 
     $stmt = $this->conn->prepare($query);
@@ -461,5 +461,4 @@ class DBImplementation
 
     return $data;
   }
-
 }
