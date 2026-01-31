@@ -265,7 +265,6 @@ async function delete_videogame(videogame_id) {
   }
 }
 
-
 async function get_profile() {
   const response = await fetch("../../api/GetProfile.php", {
     method: "GET",
@@ -296,10 +295,10 @@ async function create_cards() {
     });
     //let juegosProcesados = 0;
     let juegosSinPlataforma = 0;
-    games.forEach(game => {
-      const nombre =  game.V_NAME || "Sin nombre";
-      const imagen = game.V_NAME.replace(/ /g,"").toLowerCase();
-      const pegi =  game.V_PEGI || "PEGI ?";
+    games.forEach((game) => {
+      const nombre = game.V_NAME || "Sin nombre";
+      const imagen = game.V_NAME.replace(/ /g, "").toLowerCase();
+      const pegi = game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
       const plataforma = game.V_PLATFORM || "Plataforma desconocida";
       const gameHTML = `
@@ -328,19 +327,17 @@ async function create_cards() {
       let contenedorId = null;
       if (plataforma.includes("PC")) {
         contenedorId = "PC";
-      } else if (
-        plataforma.includes("NINTENDO")) {
+      } else if (plataforma.includes("NINTENDO")) {
         contenedorId = "NINTENDO";
       } else if (plataforma.includes("XBOX")) {
         contenedorId = "XBOX";
-      } else if (
-        plataforma.includes("PLAYSTATION")) {
+      } else if (plataforma.includes("PLAYSTATION")) {
         contenedorId = "PLAYSTATION";
       } else {
         console.error(
           ` Plataforma no reconocida: "${plataforma}" para "${nombre}"`,
         );
-        contenedorId = "PC"; 
+        contenedorId = "PC";
         juegosSinPlataforma++;
       }
       const contenedor = document.getElementById(contenedorId);

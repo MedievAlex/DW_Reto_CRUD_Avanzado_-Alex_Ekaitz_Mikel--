@@ -7,10 +7,11 @@ async function get_all_reviews() {
   const result = await response.json();
   return result.data;
 }
+
 async function get_review(videogame_code) {
   try {
     const response = await fetch(
-      `/api/Review.php?vcode=${encodeURIComponent(videogame_code)}`,
+      `../../api/Review.php?vcode=${encodeURIComponent(videogame_code)}`,
     );
     const data = await response.json();
     if (!response.ok) {
@@ -111,10 +112,13 @@ async function get_videogame(videogame_id) {
   }
 }
 async function get_profile(profile_code) {
-  const response = await fetch(`../../api/GetProfile.php?pcode=${encodeURIComponent(profile_code)}`, {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `../../api/GetProfile.php?pcode=${encodeURIComponent(profile_code)}`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
   const result = await response.json();
   console.log(result.data);
   if (response.ok) {
