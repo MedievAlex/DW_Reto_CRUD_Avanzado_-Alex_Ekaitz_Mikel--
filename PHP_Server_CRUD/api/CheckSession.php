@@ -16,7 +16,7 @@ if (isLoggedIn()) {
     'data' => $userData
   ], JSON_UNESCAPED_UNICODE);
 } else {
-  http_response_code(401);
+  http_response_code(200);
   echo json_encode([
     'success' => false,
     'message' => 'No active session',

@@ -36,16 +36,16 @@ footer {
   box-sizing: border-box;
 }
 
-body,
 html {
   height: 100%;
-  font-family: "Segoe UI", sans-serif;
-  background-color: var(--background-color);
 }
 
-.container {
+body {
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  background-color: var(--background-color);
   display: flex;
-  height: 100vh;
+  flex-direction: column;
 }
 
 .leftPanel {
@@ -215,6 +215,12 @@ html {
 }
 
 /*Home Page*/
+main,
+.mainHome,
+.container {
+  flex: 1;
+}
+
 .topPic {
   width: 10%;
 }
@@ -405,7 +411,7 @@ li {
   justify-content: center;
 }
 
-.center-flex-div>* {
+.center-flex-div > * {
   margin-left: 5px;
   margin-right: 5px;
   cursor: pointer;
@@ -460,7 +466,7 @@ li {
   box-shadow: none;
   padding: 0;
 }
-.profileAdminForm{
+.profileAdminForm {
   width: 100%;
   max-width: 100%;
   background: transparent;
@@ -723,15 +729,16 @@ footer p {
   border-radius: 10px;
   background-color: var(--menu-color);
   z-index: 99;
+  cursor: default;
+  transition: all 0.3s ease-in-out;
 }
 
 .dropdown:hover {
   font-weight: bold;
   background-color: #4d4a4a;
-  transition-duration: 0.5s;
 }
 
-.dropdown a {
+.dropdown span {
   text-decoration: none;
   color: white;
 }
@@ -755,13 +762,13 @@ footer p {
   font-weight: normal;
   color: #222020;
   justify-content: center;
+  transition: all 0.5s ease-in-out;
 }
 
 .dropdown-content a:hover {
   font-weight: bold;
   color: white;
   background-color: var(--selected-option-color);
-  transition-duration: 0.5s;
 }
 
 .logoutIcon {
@@ -800,13 +807,18 @@ footer p {
   margin: 10px;
   padding: 10px;
 
-  max-width: 180px;
+  width: 200px;
+
+  flex: 0 0 auto;
 
   border-radius: 20px;
   border: 2px solid var(--border-card-color);
 
   display: flex;
   flex-flow: column;
+
+  box-sizing: border-box;
+  overflow: hidden;
 
   transition: all 0.3s ease-in-out;
 }
@@ -828,7 +840,7 @@ footer p {
   cursor: pointer;
 }
 
-.game .data{
+.game .data {
   height: 100%;
 
   display: flex;
@@ -921,6 +933,16 @@ footer p {
   cursor: pointer;
 }
 
+.nombreList {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.editIcon {
+  display: flex;
+  gap: 8px;
+}
+
 .editIcon img {
   height: 20px;
   width: 20px;
@@ -939,20 +961,35 @@ footer p {
   padding: 10px;
 }
 
+@media (max-width: 850px) {
+  .myListsMain {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+  }
+
+  .listNames {
+    max-width: 40vw;
+  }
+
+  .nombreList {
+    word-break: break-word;
+  }
+
+  .listGames {
+    justify-content: center;
+  }
+}
+
 /***************REVIEWS***************/
 .reviews {
   margin: 20px;
-  padding: 50px;
-
-  height: calc(100vh / 2);
+  padding: 30px;
 
   display: flex;
   flex-flow: column;
-  
+
   border-radius: 15px;
   background-color: var(--clear-grey-color);
-  
-  overflow-x: scroll;
 }
 
 .gameReview:nth-of-type(odd) {
@@ -964,17 +1001,22 @@ footer p {
 }
 
 .gameReview {
-  margin: 10px;
-  padding: 10px;
+  margin: 15px 10px;
+  padding: 20px;
 
   display: flex;
   flex-flow: row;
 
   border-radius: 20px;
+  min-height: 150px;
 }
 
-.gameReview .reviewUser{
+.gameReview .reviewUser {
   margin: 10px;
+  min-width: 10%;
+  max-width: 200px;
+  flex: 0 0 auto;
+  padding: 15px;
 }
 
 .gameReview .reviewUserName {
@@ -987,11 +1029,12 @@ footer p {
   color: var(--yellow-color);
 }
 
-.gameReview .reviewData{
+.gameReview .reviewData {
   margin: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  flex: 1;
+  gap: 8px;
 
   display: flex;
   flex-flow: column;
@@ -1012,8 +1055,28 @@ footer p {
 .reviewData .reviewBottomData {
   display: flex;
   flex-wrap: wrap;
-  
+
   text-align: justify;
+}
+
+@media (max-width: 600px) {
+  .gameReview {
+    flex-direction: column;
+  }
+
+  .gameReview .reviewUser {
+    display: flex;
+    order: 2;
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .gameReview .reviewData {
+    order: 1;
+  }
 }
 
 /***************ANIMATIONS***************/

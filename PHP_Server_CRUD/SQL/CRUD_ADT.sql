@@ -1,6 +1,7 @@
 -- DB --
 
-CREATE DATABASE IF NOT EXISTS CRUD_DW;
+DROP DATABASE IF EXISTS CRUD_DW;
+CREATE DATABASE CRUD_DW;
 USE CRUD_DW;
 
 -- TABLES --
@@ -102,7 +103,7 @@ INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES
     ("Cult of The Lamb", '2022-8-11', 'PLAYSTATION', 'PEGI12'), -- 24 -- 
     ("Cult of The Lamb", '2022-8-11', 'PC', 'PEGI12'), -- 25 -- 
     ("God of War Ragnarok", '2022-11-9', 'PLAYSTATION', 'PEGI18'), -- 26 -- 
-    ("Hellblade Senua's Sacrifice", '2017-8-8', 'PLAYSTATION', 'PEGI18'), -- 27 -- 
+    ("Hellblade Senuas Sacrifice", '2017-8-8', 'PLAYSTATION', 'PEGI18'), -- 27 -- 
     ("Life is Strange", '2015-1-30', 'PLAYSTATION', 'PEGI16'), -- 28 --  
     ("Life is Strange", '2015-1-30', 'PC', 'PEGI16'), -- 29 --  
     ("Life is Strange", '2015-1-30', 'XBOX', 'PEGI16'), -- 30 -- 
