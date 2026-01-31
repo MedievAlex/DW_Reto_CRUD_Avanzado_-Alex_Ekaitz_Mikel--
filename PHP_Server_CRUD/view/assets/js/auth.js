@@ -4,6 +4,18 @@ const PUBLIC_PAGES = [LOGIN_PAGE, SIGNUP_PAGE];
 const PRIVATE_PAGES = ["main.html", "menu.html", "reviews.html", "lists.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
+document.addEventListener("DOMContentLoaded", function () {
+  const logoutLink = document.getElementById("logoutLink");
+
+  if (logoutLink) {
+    logoutLink.addEventListener("click", logout);
+  }
+});
+
+if (PUBLIC_PAGES.includes(currentPage) || PRIVATE_PAGES.includes(currentPage)) {
+  comprobarSession();
+}
+
 async function comprobarSession() {
   try {
     const response = await fetch("../../api/CheckSession.php", {
@@ -14,12 +26,10 @@ async function comprobarSession() {
     const result = await response.json();
 
     if (result.success) {
-      if (document.getElementById("contenido")) {
-        document.getElementById("contenido").style.display = "block";
-      }
-
       if (PUBLIC_PAGES.includes(currentPage)) {
         window.location.href = "menu.html";
+      } else if (PRIVATE_PAGES.includes(currentPage)) {
+        window.dispatchEvent(new Event("sessionVerified"));
       }
     } else {
       if (PRIVATE_PAGES.includes(currentPage)) {
@@ -35,6 +45,13 @@ async function comprobarSession() {
   }
 }
 
-if (PUBLIC_PAGES.includes(currentPage) || PRIVATE_PAGES.includes(currentPage)) {
-  comprobarSession();
+async function logout(event) {
+  if (event) event.preventDefault();
+
+  await fetch("../../api/Logout.php", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  window.location.href = LOGIN_PAGE;
 }
