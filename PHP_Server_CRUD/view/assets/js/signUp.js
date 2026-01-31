@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const username = document.getElementById("username")?.value || "";
     const password = document.getElementById("password")?.value || "";
+    const password2 = document.getElementById("password2")?.value || "";
     const parrafo = document.getElementById("mensaje");
 
     if (!username.trim() || username.length < 3) {
@@ -20,9 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (password !== password2) {
+      parrafo.innerText = "Las contraseñas no coinciden";
+      parrafo.style.color = "red";
+      return;
+    }
+
     try {
-      // Cambia Content-Type a application/x-www-form-urlencoded
-      // porque PHP espera datos de formulario tradicional
       const formData = new FormData();
       formData.append("username", username);
       formData.append("password", password);
@@ -40,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.status === 201) {
           localStorage.setItem("actualProfile", JSON.stringify(result.data));
-          // Pequeño retraso para que el usuario vea el mensaje
           setTimeout(() => {
             window.location.href = "menu.html";
           }, 1000);
