@@ -108,16 +108,28 @@ INSERT INTO VIDEOGAME_ (V_NAME, V_RELEASE, V_PLATFORM, V_PEGI) VALUES
     ("Hi Fi Rush", '2023-1-25', 'XBOX', 'PEGI12'); -- 31 -- 
     
 INSERT INTO LISTED_ (L_NAME, PROFILE_CODE, V_CODE) VALUES
-    ('NINTENDO', 1, 1), -- Owlboy --
-    ('NINTENDO', 1, 14), -- Balatro --
-    ('NINTENDO', 1, 19), -- Hades --
-    ('NINTENDO', 1, 23), -- Cult of The Lamb --
-    ('PLAYSTATION', 1, 10), -- Call of Duty: Black Ops II --
-    ('PLAYSTATION', 1, 28), -- Life is Strange --
-    ('PLAYSTATION', 1, 6), -- Detroit: Become Human --
-    ('PC', 1, 15), -- Balatro --
-    ('PC', 1, 25), -- Cult of The Lamb --
-    ('PC', 1, 17), -- Library Of Ruina --
+    ('MY GAMES', 1, 1), -- Owlboy Nintendo --
+    ('MY GAMES', 1, 14), -- Balatro Nintendo --
+    ('MY GAMES', 1, 19), -- Hades Nintendo --
+    ('MY GAMES', 1, 23), -- Cult of The Lamb Nintendo --
+    ('MY GAMES', 1, 10), -- Call of Duty: Black Ops II PlayStation --
+    ('MY GAMES', 1, 28), -- Life is Strange PlayStation --
+    ('MY GAMES', 1, 6), -- Detroit: Become Human PlayStation --
+    ('MY GAMES', 1, 15), -- Balatro PC --
+    ('MY GAMES', 1, 25), -- Cult of The Lamb PC --
+    ('MY GAMES', 1, 17), -- Library Of Ruina PC --
+    ('MY GAMES', 1, 13), -- Halo Infinite --
+    ('MY GAMES', 1, 31), -- Hi-Fi Rush --
+    ('NINTENDO', 1, 1), -- Owlboy Nintendo --
+    ('NINTENDO', 1, 14), -- Balatro Nintendo --
+    ('NINTENDO', 1, 19), -- Hades Nintendo --
+    ('NINTENDO', 1, 23), -- Cult of The Lamb Nintendo --
+    ('PLAYSTATION', 1, 10), -- Call of Duty: Black Ops II PlayStation --
+    ('PLAYSTATION', 1, 28), -- Life is Strange PlayStation --
+    ('PLAYSTATION', 1, 6), -- Detroit: Become Human PlayStation --
+    ('PC', 1, 15), -- Balatro PC --
+    ('PC', 1, 25), -- Cult of The Lamb PC --
+    ('PC', 1, 17), -- Library Of Ruina PC --
     ('XBOX', 1, 13), -- Halo Infinite --
     ('XBOX', 1, 31); -- Hi-Fi Rush --
 
@@ -145,5 +157,29 @@ BEGIN
 
     SELECT * FROM PROFILE_ P, USER_ U WHERE P.PROFILE_CODE = U.PROFILE_CODE AND P.PROFILE_CODE= nuevo_profile_code;
  END //
+
+DELIMITER ;
+
+-- TRIGGER para asegurar que un juego solo puede estar en otras listas si está en MY GAMES --
+DELIMITER //
+CREATE TRIGGER CheckMyGamesBeforeInsert
+BEFORE INSERT ON LISTED_
+FOR EACH ROW
+BEGIN
+    DECLARE is_in_my_games INT;
+    
+    IF UPPER(NEW.L_NAME) != 'MY GAMES' THEN
+        SELECT COUNT(*) INTO is_in_my_games 
+        FROM LISTED_ 
+        WHERE PROFILE_CODE = NEW.PROFILE_CODE 
+          AND V_CODE = NEW.V_CODE 
+          AND UPPER(L_NAME) = 'MY GAMES';
+        
+        IF is_in_my_games = 0 THEN
+            SIGNAL SQLSTATE '45000' 
+            SET MESSAGE_TEXT = 'El juego debe estar en MY GAMES antes de añadirlo a otras listas';
+        END IF;
+    END IF;
+END //
 
 DELIMITER ;

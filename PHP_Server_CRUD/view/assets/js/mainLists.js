@@ -314,9 +314,9 @@ async function update_list(new_list, old_list) {
   });
   const result = await response.json();
   if (response.ok) {
-    alert("Se ha modificado la lista correctamente");
+    alert(result.message || "Se ha modificado la lista correctamente");
   } else {
-    alert("Error al modificar la lista.");
+    alert(result.message || "Error al modificar la lista.");
   }
 }
 
@@ -330,9 +330,9 @@ async function delete_list(list) {
   );
   const result = await response.json();
   if (response.ok) {
-    alert("Eliminada la lista correctamente");
+    alert(result.message || "Eliminada la lista correctamente");
   } else {
-    alert("Error eliminado la lista.");
+    alert(result.message || "Error eliminado la lista.");
   }
 }
 
@@ -344,11 +344,51 @@ async function delete_game_from_list(list, videogame_id) {
       credentials: "include",
     },
   );
+
   const result = await response.json();
+
   if (response.ok) {
-    alert("Eliminado el juego de la lista correctamente");
+    alert(result.message || "Eliminado el juego de la lista correctamente");
+
+    if (list.toUpperCase() === "MY GAMES") {
+      await load_lists();
+    } else {
+      const listaActual = await get_games_from_list(list);
+      if (!listaActual || listaActual.length === 0) {
+        const listItems = document.querySelectorAll(".list");
+        listItems.forEach((listItem) => {
+          const nombreListDiv = listItem.querySelector(".nombreList");
+          if (nombreListDiv && nombreListDiv.textContent.trim() === list) {
+            listItem.closest("li").remove();
+
+            const index = todasLasListas.findIndex((l) => l.L_NAME === list);
+            if (index !== -1) {
+              todasLasListas.splice(index, 1);
+            }
+
+            if (nombreListaActual === list) {
+              listaSeleccionada = null;
+              nombreListaActual = null;
+
+              const nuevaPrimeraLista = document.querySelector(".list");
+              if (nuevaPrimeraLista) {
+                nuevaPrimeraLista.click();
+              } else {
+                clean_games();
+              }
+            }
+          }
+        });
+
+        return;
+      }
+
+      if (list === nombreListaActual) {
+        await show_games_from_list(list);
+      }
+    }
   } else {
-    alert("Error al eliminar el juego de la lista");
+    alert(result.message || "Error al eliminar el juego de la lista");
   }
 }
 
@@ -359,30 +399,56 @@ async function load_lists() {
 
     todasLasListas = lists || [];
 
-    if (!lists?.length) {
+    const myGamesExists = todasLasListas.some(
+      (list) => list.L_NAME.toUpperCase() === "MY GAMES",
+    );
+
+    if (!myGamesExists) {
+      todasLasListas.unshift({ L_NAME: "MY GAMES" });
+    }
+
+    if (!todasLasListas.length) {
       container.innerHTML = "<p>No hay listas disponibles</p>";
       clean_games();
       return;
     }
 
-    container.innerHTML = lists
-      .map(
-        (list) => `
-      <li>
-        <div class="list">
-          <div class="nombreList">${list.L_NAME}</div>
-          <div class="editIcon">
-            <img class="rename" src="../assets/img/icons/rename.png" />
-            <img class="delete" src="../assets/img/icons/delete.png" />
+    container.innerHTML = todasLasListas
+      .map((list) => {
+        const listName = list.L_NAME;
+        const isMyGames = listName.toUpperCase() === "MY GAMES";
+
+        return `
+        <li>
+          <div class="list">
+            <div class="nombreList">${listName}</div>
+            ${
+              !isMyGames
+                ? `
+              <div class="editIcon">
+                <img class="rename" src="../assets/img/icons/rename.png" />
+                <img class="delete" src="../assets/img/icons/delete.png" />
+              </div>
+            `
+                : ""
+            }
           </div>
-        </div>
-      </li>
-    `,
-      )
+        </li>
+      `;
+      })
       .join("");
 
     setup_event_listeners();
-    document.querySelector(".list")?.click();
+
+    const myGamesList = document.querySelector(".nombreList");
+    if (
+      myGamesList &&
+      myGamesList.textContent.trim().toUpperCase() === "MY GAMES"
+    ) {
+      myGamesList.closest(".list").click();
+    } else {
+      document.querySelector(".list")?.click();
+    }
   } catch (error) {
     console.error("Error al cargar listas:", error);
     document.getElementById("listas").innerHTML = `

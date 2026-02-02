@@ -262,6 +262,15 @@ try {
 
         $result = $controller->delete_game_list($profile_code, $videogame_code, $list);
         $message = 'Game removed from list successfully';
+
+        if ($result && strtoupper($list) === 'MY GAMES') {
+          $userLists = $controller->get_lists($profile_code);
+          foreach ($userLists as $userList) {
+            if (strtoupper($userList['L_NAME']) !== 'MY GAMES') {
+              $controller->delete_game_list($profile_code, $videogame_code, $userList['L_NAME']);
+            }
+          }
+        }
       } else {
         $result = $controller->delete_list($profile_code, $list);
         $message = 'List deleted successfully';
