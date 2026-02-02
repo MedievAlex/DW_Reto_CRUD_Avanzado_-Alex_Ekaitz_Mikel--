@@ -1,5 +1,14 @@
+// ==============================
+// VARIABLES GLOBALES
+// ==============================
+
 let isLoading = false;
 let heartButtonsInitialized = false;
+let myGamesSet = new Set();
+
+// ==============================
+// EVENTO PRINCIPAL - SESIÓN VERIFICADA
+// ==============================
 
 window.addEventListener("sessionVerified", async () => {
   if (isLoading) return;
@@ -24,7 +33,9 @@ window.addEventListener("sessionVerified", async () => {
   }
 });
 
-let myGamesSet = new Set();
+// ==============================
+// FUNCIONES DE PERFIL Y JUEGOS
+// ==============================
 
 async function get_profile() {
   const response = await fetch("../../api/GetProfile.php", {
@@ -48,6 +59,10 @@ async function get_all_videogames() {
     alert("Error al obtener los juegos");
   }
 }
+
+// ==============================
+// FUNCIONES DE "MY GAMES"
+// ==============================
 
 async function loadMyGames() {
   try {
@@ -132,6 +147,10 @@ function updateHeartIcon(img, isInMyGames) {
   }
 }
 
+// ==============================
+// FUNCIÓN PARA CREAR CARDS
+// ==============================
+
 async function create_cards() {
   try {
     const games = await get_all_videogames();
@@ -153,7 +172,7 @@ async function create_cards() {
       const imagen = game.V_NAME.replace(/ /g, "").toLowerCase();
       const pegi = game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
-      const plataforma = game.V_PLATFORM || "PC";
+      const plataforma = game.V_PLATFORM || "";
       const gameId = game.V_CODE;
 
       const isInMyGames = myGamesSet.has(parseInt(gameId));
@@ -177,6 +196,9 @@ async function create_cards() {
               </div>
               <div class="gameRelease">
                 Release: ${release}
+              </div>
+              <div class="gamePlatform">
+                ${plataforma}
               </div>
             </div>
             <div class="heartIcon">
@@ -208,6 +230,10 @@ async function create_cards() {
     `;
   }
 }
+
+// ==============================
+// CONFIGURACIÓN DE BOTONES CORAZÓN
+// ==============================
 
 function setupHeartButtons() {
   document.addEventListener("click", async (event) => {

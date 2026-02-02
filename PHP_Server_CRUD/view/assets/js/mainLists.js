@@ -1,12 +1,35 @@
-window.addEventListener("sessionVerified", async () => {
-  let profile = await get_profile();
-  document.getElementById("adjustDataID").innerHTML = profile.USER_NAME;
-  await load_lists();
-});
+// ==============================
+// VARIABLES PARA LISTAS
+// ==============================
 
 let todasLasListas = [];
 let listaSeleccionada = null;
 let nombreListaActual = null;
+let isLoadingLists = false;
+
+// ==============================
+// EVENTO PARA CARGAR LISTAS
+// ==============================
+
+window.addEventListener("sessionVerified", async () => {
+  if (isLoadingLists) return;
+  isLoadingLists = true;
+
+  try {
+    let profile = await get_profile();
+    document.getElementById("adjustDataID").innerHTML = profile.USER_NAME;
+    await load_lists();
+  } catch (error) {
+    console.error("Error al cargar listas:", error);
+    alert("Error al cargar las listas");
+  } finally {
+    isLoadingLists = false;
+  }
+});
+
+// ==============================
+// CONFIGURACIÓN DE EVENTOS PARA LISTAS
+// ==============================
 
 function setup_event_listeners() {
   const renameButtons = document.querySelectorAll(".rename");
@@ -15,12 +38,17 @@ function setup_event_listeners() {
 
   listDivs.forEach((listDiv) => {
     listDiv.onclick = async function (event) {
+      // Closest va buscando hacia arriba desde el elemento del evento hasta encontrar uno con esa clase
       if (event.target.closest(".rename") || event.target.closest(".delete")) {
         return;
       }
 
       const nombreListDiv = this.querySelector(".nombreList");
       const listName = nombreListDiv.textContent.trim();
+
+      if (listaSeleccionada === this) {
+        return;
+      }
 
       if (listaSeleccionada && listaSeleccionada !== this) {
         listaSeleccionada.style.fontWeight = "normal";
@@ -117,6 +145,10 @@ function setup_event_listeners() {
   });
 }
 
+// ==============================
+// CONFIGURACIÓN DE BOTONES DE JUEGOS
+// ==============================
+
 function setup_game_buttons() {
   const addToListButtons = document.querySelectorAll(".addToList");
   addToListButtons.forEach((button) => {
@@ -150,6 +182,10 @@ function setup_game_buttons() {
   });
 }
 
+// ==============================
+// GESTIÓN DE AÑADIR JUEGOS A LISTAS
+// ==============================
+
 async function manage_add_game(gameId, gameName) {
   const nombreLista = prompt(
     `Introduce el nombre de la lista donde añadir "${gameName}":`,
@@ -160,6 +196,28 @@ async function manage_add_game(gameId, gameName) {
   }
 
   const nombreTrimmed = nombreLista.trim();
+
+  if (nombreTrimmed.toUpperCase() === "MY GAMES") {
+    const myGamesExisteEnServidor = await get_games_from_list("MY GAMES");
+
+    if (myGamesExisteEnServidor && myGamesExisteEnServidor.length > 0) {
+      const resultado = await create_list("MY GAMES", gameId);
+      if (resultado) {
+        alert("Juego añadido a MY GAMES correctamente");
+        if ("MY GAMES" === nombreListaActual) {
+          await show_games_from_list("MY GAMES");
+        }
+      }
+    } else {
+      const resultado = await create_list("MY GAMES", gameId);
+      if (resultado) {
+        alert("MY GAMES creada y juego añadido correctamente");
+        await load_lists();
+      }
+    }
+    return;
+  }
+
   const listaExiste = todasLasListas.find(
     (lista) => lista.L_NAME.toLowerCase() === nombreTrimmed.toLowerCase(),
   );
@@ -184,9 +242,13 @@ async function manage_add_game(gameId, gameName) {
   }
 
   if (nombreTrimmed === nombreListaActual) {
-    await show_games_from_list(nombreListaActual);
+    await show_games_from_list(nombreTrimmed);
   }
 }
+
+// ==============================
+// FUNCIONES DE API PARA LISTAS
+// ==============================
 
 async function get_profile(profilecode = null) {
   const url = profilecode
@@ -363,7 +425,7 @@ async function delete_game_from_list(list, videogame_id) {
 
             const index = todasLasListas.findIndex((l) => l.L_NAME === list);
             if (index !== -1) {
-              todasLasListas.splice(index, 1);
+              todasLasListas.splice(index, 1); // Eliminar del array (indice, n elementos)
             }
 
             if (nombreListaActual === list) {
@@ -392,10 +454,16 @@ async function delete_game_from_list(list, videogame_id) {
   }
 }
 
+// ==============================
+// CARGA Y GESTIÓN DE LISTAS
+// ==============================
+
 async function load_lists() {
   try {
     const lists = await get_lists();
     const container = document.getElementById("listas");
+
+    container.innerHTML = "";
 
     todasLasListas = lists || [];
 
@@ -404,7 +472,7 @@ async function load_lists() {
     );
 
     if (!myGamesExists) {
-      todasLasListas.unshift({ L_NAME: "MY GAMES" });
+      todasLasListas.unshift({ L_NAME: "MY GAMES" }); // Unshift añade al inicio del array
     }
 
     if (!todasLasListas.length) {
@@ -413,12 +481,11 @@ async function load_lists() {
       return;
     }
 
-    container.innerHTML = todasLasListas
-      .map((list) => {
-        const listName = list.L_NAME;
-        const isMyGames = listName.toUpperCase() === "MY GAMES";
+    todasLasListas.forEach((list) => {
+      const listName = list.L_NAME;
+      const isMyGames = listName.toUpperCase() === "MY GAMES";
 
-        return `
+      const listHTML = `
         <li>
           <div class="list">
             <div class="nombreList">${listName}</div>
@@ -435,8 +502,9 @@ async function load_lists() {
           </div>
         </li>
       `;
-      })
-      .join("");
+
+      container.insertAdjacentHTML("beforeend", listHTML);
+    });
 
     setup_event_listeners();
 
@@ -459,6 +527,10 @@ async function load_lists() {
     `;
   }
 }
+
+// ==============================
+// FUNCIONES PARA OBTENER JUEGOS
+// ==============================
 
 async function get_games_from_list(listName) {
   try {
@@ -521,6 +593,10 @@ async function get_game_by_id(gameId) {
   }
 }
 
+// ==============================
+// MOSTRAR JUEGOS DE UNA LISTA
+// ==============================
+
 async function show_games_from_list(listName) {
   try {
     const juegosIds = await get_games_from_list(listName);
@@ -552,7 +628,7 @@ async function show_games_from_list(listName) {
       return;
     }
 
-    let gamesHTML = "";
+    listGamesSection.innerHTML = "";
 
     juegosCompletos.forEach((game) => {
       if (!game || !game.V_NAME) {
@@ -563,9 +639,10 @@ async function show_games_from_list(listName) {
       const imagenNombre = nombre.replace(/ /g, "").toLowerCase();
       const pegi = game.V_PEGI || "PEGI ?";
       const release = game.V_RELEASE || "Fecha desconocida";
+      const plataforma = game.V_PLATFORM || "";
       const gameId = game.V_CODE;
 
-      gamesHTML += `
+      const gameHTML = `
         <div class="game listGame" data-game-id="${gameId}">
           <div class="gameCover">
             <img src="../assets/img/covers/${imagenNombre}.png" alt="${nombre}" />
@@ -581,6 +658,9 @@ async function show_games_from_list(listName) {
               <div class="gameRelease">
                 Release: ${release}
               </div>
+              <div class="gamePlatform">
+                ${plataforma}
+              </div>
             </div>
             <div class="listGameActions">
               <button class="removeFromList" title="Eliminar de esta lista">
@@ -593,9 +673,10 @@ async function show_games_from_list(listName) {
           </div>
         </div>
       `;
+
+      listGamesSection.insertAdjacentHTML("beforeend", gameHTML);
     });
 
-    listGamesSection.innerHTML = gamesHTML;
     setup_game_buttons();
   } catch (error) {
     console.error("Error al mostrar juegos de lista:", error);
@@ -606,6 +687,10 @@ async function show_games_from_list(listName) {
     }
   }
 }
+
+// ==============================
+// LIMPIAR JUEGOS MOSTRADOS
+// ==============================
 
 function clean_games() {
   const listGamesSection = document.querySelector(".listGames");
