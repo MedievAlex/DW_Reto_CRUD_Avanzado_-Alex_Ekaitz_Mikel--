@@ -924,6 +924,10 @@ footer p {
   transition: filter 0.1s linear;
 }
 
+.game .heartIcon img.heart-selected {
+  filter: grayscale(0%);
+}
+
 .game .heartIcon button:hover img {
   filter: grayscale(0%);
   animation: heartBeat 1s infinite;
