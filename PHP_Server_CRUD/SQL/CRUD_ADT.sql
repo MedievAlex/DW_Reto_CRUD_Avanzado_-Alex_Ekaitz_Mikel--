@@ -1,5 +1,4 @@
 -- DB --
-
 DROP DATABASE IF EXISTS CRUD_DW;
 CREATE DATABASE CRUD_DW;
 USE CRUD_DW;
@@ -59,7 +58,6 @@ CREATE TABLE REVIEW_(
 );
 
 -- INSERTS --
-
 INSERT INTO PROFILE_ (PROFILE_CODE, EMAIL, USER_NAME, PSWD, TELEPHONE, NAME_, SURNAME) VALUES
     (1, 'juan.perez@email.com', 'juanP', '$2y$10$7OMKfOjQveaUvkRh18Ok8OvWOpSXyAGW0cf/raaZh9Kzk5GucWm6m', 611223344, 'Juan', 'Pérez'),
     (2, 'maria.garcia@email.com', 'mariag', '$2y$10$dVhwoJ9yT8gRbLuBIWiKD.RLiF87h09uDArHwGAlsuH/0CxTBC0da', 622334455, 'María', 'García'),
