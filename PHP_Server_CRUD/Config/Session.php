@@ -42,7 +42,7 @@ function requireAdmin()
 
 function getUserData()
 {
-   $controller = new controller();
+  $controller = new controller();
   if (isset($_SESSION['admin_id'])) {
     $admindata = $controller->get_complete_admin_data($_SESSION['admin_id']);
     return [

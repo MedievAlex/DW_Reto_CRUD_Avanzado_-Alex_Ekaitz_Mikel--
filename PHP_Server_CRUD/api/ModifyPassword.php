@@ -62,7 +62,17 @@ try {
   $controller = new controller();
 
   if ($userData['id'] == $profile_code) {
-    $username = $userData['username'];
+    if (!isset($userData['data']) || !isset($userData['data']['USER_NAME'])) {
+      http_response_code(500);
+      echo json_encode([
+        'success' => false,
+        'message' => 'Could not retrieve username from session',
+        'data' => []
+      ], JSON_UNESCAPED_UNICODE);
+      exit();
+    }
+
+    $username = $userData['data']['USER_NAME'];
 
     if ($userData['type'] === 'admin') {
       $user = $controller->loginAdmin($username, $old_password);
@@ -105,5 +115,4 @@ try {
     'message' => 'Server error: ' . $e->getMessage(),
     'data' => []
   ], JSON_UNESCAPED_UNICODE);
-
 }
