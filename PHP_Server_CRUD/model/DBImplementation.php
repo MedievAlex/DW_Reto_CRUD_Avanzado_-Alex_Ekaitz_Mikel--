@@ -355,12 +355,24 @@ class DBImplementation
 
   public function create_list($listed)
   {
+    $listName = trim($listed->getName());
+
+    $checkQuery = "SELECT * FROM LISTED_ WHERE PROFILE_CODE = :pcode AND UPPER(L_NAME) = UPPER(:l_name)";
+    $checkStmt = $this->conn->prepare($checkQuery);
+    $checkStmt->bindValue(':pcode', $listed->getProfileCode());
+    $checkStmt->bindValue(':l_name', $listName);
+    $checkStmt->execute();
+
+    if ($checkStmt->rowCount() > 0) {
+      return null;
+    }
+
     $query = "INSERT INTO LISTED_ (PROFILE_CODE, V_CODE, L_NAME) VALUES (:pcode, :vcode, :l_name)";
 
     $stmt = $this->conn->prepare($query);
     $stmt->bindValue(':pcode', $listed->getProfileCode());
     $stmt->bindValue(':vcode', $listed->getVCode());
-    $stmt->bindValue(':l_name', $listed->getName());
+    $stmt->bindValue(':l_name', $listName);
 
     if ($stmt->execute()) {
       return [
@@ -374,8 +386,17 @@ class DBImplementation
 
   public function update_list($pcode, $old_list, $new_list)
   {
-    $query = "UPDATE LISTED_ SET L_NAME = :new_list WHERE PROFILE_CODE = :pcode AND L_NAME = :old_list";
+    $checkQuery = "SELECT * FROM LISTED_ WHERE PROFILE_CODE = :pcode AND UPPER(L_NAME) = UPPER(:new_list)";
+    $checkStmt = $this->conn->prepare($checkQuery);
+    $checkStmt->bindValue(':pcode', $pcode);
+    $checkStmt->bindValue(':new_list', trim($new_list));
+    $checkStmt->execute();
 
+    if ($checkStmt->rowCount() > 0) {
+      return false;
+    }
+
+    $query = "UPDATE LISTED_ SET L_NAME = :new_list WHERE PROFILE_CODE = :pcode AND L_NAME = :old_list";
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':pcode', $pcode);
     $stmt->bindParam(':old_list', $old_list);
@@ -383,6 +404,7 @@ class DBImplementation
 
     return $stmt->execute();
   }
+
 
   public function delete_list($pcode, $list)
   {

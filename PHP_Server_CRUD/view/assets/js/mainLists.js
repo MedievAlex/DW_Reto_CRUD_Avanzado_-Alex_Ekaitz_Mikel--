@@ -198,9 +198,9 @@ async function manage_add_game(gameId, gameName) {
   const nombreTrimmed = nombreLista.trim();
 
   if (nombreTrimmed.toUpperCase() === "MY GAMES") {
-    const myGamesExisteEnServidor = await get_games_from_list("MY GAMES");
+    const myGamesExiste = await get_games_from_list("MY GAMES");
 
-    if (myGamesExisteEnServidor && myGamesExisteEnServidor.length > 0) {
+    if (myGamesExiste && myGamesExiste.length > 0) {
       const resultado = await create_list("MY GAMES", gameId);
       if (resultado) {
         alert("Juego añadido a MY GAMES correctamente");
@@ -467,12 +467,25 @@ async function load_lists() {
 
     todasLasListas = lists || [];
 
-    const myGamesExists = todasLasListas.some(
-      (list) => list.L_NAME.toUpperCase() === "MY GAMES",
-    );
+    let myGamesExists = false;
+    for (let i = 0; i < todasLasListas.length; i++) {
+      if (todasLasListas[i].L_NAME.toUpperCase() === "MY GAMES") {
+        myGamesExists = true;
+        break;
+      }
+    }
 
     if (!myGamesExists) {
-      todasLasListas.unshift({ L_NAME: "MY GAMES" }); // Unshift añade al inicio del array
+      todasLasListas.unshift({ L_NAME: "MY GAMES" });
+    } else {
+      const myGamesIndex = todasLasListas.findIndex(
+        (list) => list.L_NAME.toUpperCase() === "MY GAMES",
+      );
+
+      if (myGamesIndex > 0) {
+        const myGamesList = todasLasListas.splice(myGamesIndex, 1)[0];
+        todasLasListas.unshift(myGamesList);
+      }
     }
 
     if (!todasLasListas.length) {

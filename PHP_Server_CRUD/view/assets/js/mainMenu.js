@@ -197,9 +197,6 @@ async function create_cards() {
               <div class="gameRelease">
                 Release: ${release}
               </div>
-              <div class="gamePlatform">
-                ${plataforma}
-              </div>
             </div>
             <div class="heartIcon">
               <button title="${heartTitle}">
