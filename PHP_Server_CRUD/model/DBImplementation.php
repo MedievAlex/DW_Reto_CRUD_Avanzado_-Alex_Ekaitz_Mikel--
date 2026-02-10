@@ -356,10 +356,14 @@ class DBImplementation
   public function create_list($listed)
   {
     $listName = trim($listed->getName());
+    $profileCode = $listed->getProfileCode();
+    $vCode = $listed->getVCode();
 
-    $checkQuery = "SELECT * FROM LISTED_ WHERE PROFILE_CODE = :pcode AND UPPER(L_NAME) = UPPER(:l_name)";
+    $checkQuery = "SELECT * FROM LISTED_ WHERE PROFILE_CODE = :pcode AND V_CODE = :vcode AND UPPER(L_NAME) = UPPER(:l_name)";
+
     $checkStmt = $this->conn->prepare($checkQuery);
-    $checkStmt->bindValue(':pcode', $listed->getProfileCode());
+    $checkStmt->bindValue(':pcode', $profileCode);
+    $checkStmt->bindValue(':vcode', $vCode);
     $checkStmt->bindValue(':l_name', $listName);
     $checkStmt->execute();
 
@@ -370,15 +374,15 @@ class DBImplementation
     $query = "INSERT INTO LISTED_ (PROFILE_CODE, V_CODE, L_NAME) VALUES (:pcode, :vcode, :l_name)";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindValue(':pcode', $listed->getProfileCode());
-    $stmt->bindValue(':vcode', $listed->getVCode());
+    $stmt->bindValue(':pcode', $profileCode);
+    $stmt->bindValue(':vcode', $vCode);
     $stmt->bindValue(':l_name', $listName);
 
     if ($stmt->execute()) {
       return [
-        'profile_code' => $listed->getProfileCode(),
-        'videogame_code' => $listed->getVCode(),
-        'list_name' => $listed->getName()
+        'profile_code' => $profileCode,
+        'videogame_code' => $vCode,
+        'list_name' => $listName
       ];
     }
     return false;
