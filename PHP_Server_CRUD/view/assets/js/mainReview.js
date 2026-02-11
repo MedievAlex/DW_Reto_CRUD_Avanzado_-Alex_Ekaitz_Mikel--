@@ -128,33 +128,41 @@ async function delete_review(videogame_code) {
 }
 
 async function get_videogame(videogame_id) {
-  const response = await fetch(
-    `../../api/Videogame.php?id=${encodeURIComponent(videogame_id)}`,
-  );
-  const result = await response.json();
-  if (response.ok) {
-    return result.data || [];
-  } else {
-    alert("Error al obtener el videojuego");
-    return [];
+  try {
+    const response = await fetch(
+      `../../api/Videogame.php?id=${encodeURIComponent(videogame_id)}`,
+      {
+        credentials: "include",
+      },
+    );
+    const result = await response.json();
+    if (response.ok) {
+      return result.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error en get_videogame:", error.message);
+    return null;
   }
 }
 
 async function get_profile(profilecode = null) {
-  const url = profilecode
-    ? `../../api/GetProfile.php?pcode=${encodeURIComponent(profilecode)}`
-    : "../../api/GetProfile.php";
+  try {
+    const url = profilecode
+      ? `../../api/GetProfile.php?pcode=${encodeURIComponent(profilecode)}`
+      : "../../api/GetProfile.php";
 
-  const response = await fetch(url, {
-    method: "GET",
-    credentials: "include",
-  });
-  const result = await response.json();
-  if (response.ok) {
-    return result.data || [];
-  } else {
-    alert("Error al obtener el profile");
-    return [];
+    const response = await fetch(url, {
+      credentials: "include",
+    });
+    const result = await response.json();
+    if (response.ok) {
+      return result.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error en get_profile:", error.message);
+    return null;
   }
 }
 
@@ -170,34 +178,36 @@ async function cargar_Reviews() {
     container.innerHTML = "";
 
     for (const review of reviews) {
-      const gameData = await get_videogame(review.V_CODE);
-      const profileData = await get_profile(review.PROFILE_CODE);
+      const game = await get_videogame(review.V_CODE);
 
-      const game = gameData.length > 0 ? gameData[0] : null;
-      const profile = profileData.length > 0 ? profileData[0] : null;
+      const profile = await get_profile(review.PROFILE_CODE);
 
       const reviewHTML = `
         <div class="gameReview">
           <div class="reviewUser">
             <div class="reviewUserName">
-              ${profile ? profile.USER_NAME : "Usuario desconocido"}
+              ${profile?.USER_NAME || "Usuario desconocido"}
             </div>
             <div class="reviewDate">
-              ${review.R_DATE}
+              ${review.R_DATE || "Fecha desconocida"}
             </div>
           </div>
           <div class="reviewData">
             <div class="reviewTopData">
-              <div>${game ? game.V_NAME : "Juego desconocido"}</div>
+              <div>${game?.V_NAME || "Juego desconocido"}</div>
               <div>${review.R_SCORE}/10</div>
             </div>
             <div class="reviewBottomData">
-              <p>${review.R_DESCRIPTION}</p>
+              <p>${review.R_DESCRIPTION || "Sin descripción"}</p>
             </div>
           </div>
         </div>`;
 
       container.insertAdjacentHTML("beforeend", reviewHTML);
+    }
+
+    if (reviews.length === 0) {
+      container.innerHTML = "<p>No hay reviews disponibles</p>";
     }
   } catch (error) {
     console.error("Error al cargar reviews:", error);
